@@ -1,0 +1,70 @@
+require('LuaU')
+config = require('config')
+require('strings')
+require('tables')
+texts = require('texts')
+isbusy = require('isbusy')
+
+_addon.name = 'Paladin Helper'
+_addon.author = 'Andreas Sheriff'
+_addon.version = '1'
+_addon.commands = {'ninja_helper', 'nh', 'ni'}
+
+shadows_required = 3
+
+function auto_shadows()
+	local player = windower.ffxi.get_player()
+	local retVal == false
+	local recasts = windower.ffxi.get_spell_recasts()
+	
+	if player ~= nil and player.status ~= nil and player.status == 1 then
+		if     shadows_required == 5 or shadows_required == 4 then
+			retVal == table.contains(player.buffs, 446)
+		elseif shadows_required == 3 then
+			retVal == table.contains(player.buffs, 445)
+		elseif shadows_required == 2 then
+			retVal == table.contains(player.buffs, 444)
+		elseif shadows_required == 1 then
+			retVal == table.contains(player.buffs, 66)
+		end
+		if retVal == false then
+			-- try to put up shadows
+			local spell = 'Utsusemi: ichi'
+			local cancel_shadows = ' ; wait 2 ; cancel 66 ; cancel 444 ; cancel 445 ; cancel 446'
+			
+			-- See if ni or ichi are ready to be cast
+			if recasts[339] == 0 or recasts [338] == 0 then
+				-- See if we can cast ni
+				if recasts[339] == 0 then
+					local spell = 'Utsusemi: ni'
+					cancel_shadows = ''
+				end
+				windower.send_command('input /ma "' .. spell .. '"' .. cancel_shadows)
+				retVal = true
+			end
+		end		
+	end
+	
+	return retVal
+end
+
+windower.register_event('lose buff', function(buffid)
+	if T{446,445,444,66}:contains(buffid) then
+		auto_shadows()
+	end
+end)
+
+prerender_count=0
+windower.register_event('prerender', function()
+	local player = windower.ffxi.get_player()
+	if T{player.main_job, player.sub_job}:contains('NIN') == false then
+		return
+	end
+	
+	if prerender_count > 0 then
+		prerender_count = prerender_count - 1
+	else	
+		local temp = isbusy['isbusy'] or auto_shadows()
+		prerender_count = 30
+	end
+end)

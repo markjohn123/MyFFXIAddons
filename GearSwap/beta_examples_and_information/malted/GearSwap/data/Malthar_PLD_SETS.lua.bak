@@ -1,0 +1,1021 @@
+function get_sets()
+	local baseset = 'baseset'
+	local PDT     = 'PDT'
+	local precast = 'precast'
+	local midcast = 'midcast'
+	local aftercast='aftercast'
+	
+	-- Redefine gear to call gs c gear
+	send_command('alias gear gs c gear')
+	send_command('alias naked gs equip naked')
+	send_command('alias ochain gs c weapon ochain')
+	send_command('alias aegis gs c weapon aegis')
+	send_command('alias priwen gs c weapon priwen')
+
+	--  These are the weapons I use
+	sets["weapons"] = {}
+	
+	sets.weapons["aegis"]  = {
+		main="Burtgang", sub="Aegis"
+	}
+	
+	sets.weapons["ochain"] = {
+		main="Burtgang", sub="Ochain"
+	}
+	
+	sets.weapons["priwen"] = {
+		main="Burtgang", sub="Priwen"
+	}
+	
+	sets['enmity'] = {
+				ammo="Paeapua",
+				head="cab. coronet +1",
+				left_ear="Trux earring",
+				right_ear="Cryptic earring",
+				body="Rev. Surcoat +1",
+				hands="Cab. Gauntlets +1",
+				left_ring="Provocare Ring",
+				right_ring="Eihwaz Ring",
+				back={ name="Rudianos's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','Enmity+10',}},
+				waist="Creed Baudrier",
+				legs="Cab. Breeches +1",
+				feet="Yorium Sabatons"
+	}
+
+	
+	sets['Idle'] = {
+    ammo="Demonry Stone",
+    head="Rev. Coronet +1",
+    body="Chozoron coselete",
+    hands="Rev. Gauntlets +1",
+    legs="Carmine Cuisses +1",
+    feet="Cab. Leggings +1",
+    neck="Creed Collar",
+    waist="Flume Belt +1",
+    left_ear="Sanare Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Patricius Ring",
+    right_ring="Defending Ring",
+    back="Repulse Mantle"
+	}
+	
+	sets['Engaged'] = {
+    ammo="Paeapua",
+    head="Yaoyotl Helm",
+    body="Chozoron coselete",
+    hands={ name="Xaddi Gauntlets", augments={'Accuracy+15','"Store TP"+3','"Dbl.Atk."+2',}},
+    legs={ name="Cab. Breeches +1", augments={'Enhances "Invincible" effect',}},
+    feet={ name="Cab. Leggings +1", augments={'Enhances "Guardian" effect',}},
+    neck="Asperity Necklace",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Rajas Ring",
+    right_ring="Pernicious Ring",
+    back="Atheling Mantle",
+	}
+	
+	sets['Resting']   = sets.Idle
+
+	local tempIdleset = sets.Idle
+	local tempEngagedset = sets.Engaged
+	
+	
+	sets.Idle['NORMAL'] = sets.Idle
+	sets.Engaged['NORMAL'] = sets.Engaged
+	sets.Resting['NORMAL'] = sets.Resting
+
+	sets.Idle['ENMITY'] = tempIdleset
+
+	sets.Engaged['ENMITY'] = {
+		baseset=tempEngagedset,
+				ammo="Paeapua",
+				head="cab. coronet +1",
+				left_ear="Trux earring",
+				right_ear="Friomisi earring",
+				body="Rev. Surcoat +1",
+				hands="Cab. Gauntlets +1",
+				left_ring="Provocare Ring",
+				right_ring="Pernicious Ring",
+				back="Fravashi Mantle",
+				waist="Creed Baudrier",
+				legs="Cab. Breeches +1",
+				feet="Yorium Sabatons"
+
+	}
+	
+	-- PDT and MDT gear
+	sets.Idle['PDT'] = {
+		baseset=tempIdleset,
+			ammo="Angha Gem",
+			head="Ighwa Cap",
+			neck="Twilight Torque",
+			left_ear="Steelflash Earring",
+			right_ear="Bladeborn Earring",
+    	body="Chozoron coselete",
+			hands="Cizin Mufflers +1",
+      left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+			right_ring="Defending Ring",
+			back="Repulse mantle",
+			waist="Flume Belt +1",
+			legs="Carmine Cuisses +1",
+			feet="Rev. Leggings +1",
+			PDT={
+				head="Rev. Coronet +1",
+   			body="Chozoron coselete",
+				hands="Cizin Mufflers +1",
+				legs="Cab. Breeches +1",
+				feet="Rev. Leggings +1"		
+		}		
+	}
+	
+	sets.Engaged['PDT'] = {
+		baseset=tempEngagedset,
+			ammo="Angha Gem",
+			head="Rev. Coronet +1",
+			neck="Creed Collar",
+			left_ear="brutal Earring",
+			right_ear="Trux Earring",
+    	body="Chozoron coselete",
+			hands="Cizin Mufflers +1",
+      left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+			right_ring="Defending Ring",
+			back="Mollusca Mantle",
+			waist="Flume Belt +1",
+			legs="Cab. Breeches +1",
+			feet="Rev. Leggings +1",
+			PDT={
+				head="Rev. Coronet +1",
+  		  body="Chozoron coselete",
+				hands="Cizin Mufflers +1",
+				legs="Cab. Breeches +1",
+				feet="Rev. Leggings +1"		
+		}		
+	}
+
+	sets.Idle['ACCPDT'] = {
+		baseset=sets.Idle.PDT,
+    ammo="Staunch Tathlum",
+    head="Sulevia's Mask +1",
+    body="Chozor. Coselete",
+    hands="Sulev. Gauntlets +1",
+    legs="Carmine Cuisses +1",
+    feet="Sulev. Leggings +2",
+    neck="Twilight Torque",
+    waist="Nierenschutz",
+    left_ear="Cryptic Earring",
+    right_ear="Thureous Earring",
+    left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    right_ring="Defending Ring",
+    back="Philidor Mantle",
+    PDT={
+	    head="Sulevia's Mask +1",
+	    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+	    hands="Sulev. Gauntlets +1",
+	    legs="Sulevi. Cuisses +1",
+	    feet="Sulev. Leggings +2",
+    }
+	}
+	
+	sets.Engaged['ACCPDT'] = {
+    ammo="Staunch Tathlum",
+    head="Sulevia's Mask +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    neck="Homeric Gorget",
+    waist="Nierenschutz",
+    left_ear="Cryptic Earring",
+    right_ear="Thureous Earring",
+    left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    right_ring="Defending Ring",
+    back={ name="Rudianos's Mantle", augments={'VIT+20','Accuracy+20 Attack+20','Enmity+10',}},
+    PDT={
+	    head="Sulevia's Mask +1",
+	    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+	    hands="Sulev. Gauntlets +1",
+	    legs="Sulevi. Cuisses +1",
+	    feet="Sulev. Leggings +2",
+    }
+	}
+
+	sets.Idle['DT'] = {
+    ammo="Staunch Tathlum",
+    head="Sulevia's Mask +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    neck="Twilight Torque",
+    waist="Nierenschutz",
+    left_ear="Cryptic Earring",
+    right_ear="Thureous Earring",
+    left_ring="Pernicious Ring",
+    right_ring="Defending Ring",
+    back="Philidor Mantle",
+    PDT={
+	    ammo="Staunch Tathlum",
+	    head="Sulevia's Mask +1",
+	    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+	    hands="Sulev. Gauntlets +1",
+	    legs="Sulevi. Cuisses +1",
+	    feet="Sulev. Leggings +2",
+	    neck="Twilight Torque",
+	    waist="Nierenschutz",
+	    left_ring="Pernicious Ring",
+	    right_ring="Defending Ring",
+	    back="Philidor Mantle",
+    }
+	}
+	
+	sets.Engaged['DT'] = {
+    ammo="Staunch Tathlum",
+    head="Sulevia's Mask +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    neck="Twilight Torque",
+    waist="Nierenschutz",
+    left_ear="Cryptic Earring",
+    right_ear="Thureous Earring",
+    left_ring="Pernicious Ring",
+    right_ring="Defending Ring",
+    back="Philidor Mantle",
+    PDT={
+	    ammo="Staunch Tathlum",
+	    head="Sulevia's Mask +1",
+	    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+	    hands="Sulev. Gauntlets +1",
+	    legs="Sulevi. Cuisses +1",
+	    feet="Sulev. Leggings +2",
+	    neck="Twilight Torque",
+	    waist="Nierenschutz",
+	    left_ring="Pernicious Ring",
+	    right_ring="Defending Ring",
+	    back="Philidor Mantle",
+    }
+	}
+
+
+
+
+	sets.Idle['DEATH'] = {
+		baseset=sets.Idle.PDT,
+    ammo="Demonry Stone",
+    head="Sulevia's Mask +1",
+    body="Chozoron coselete",
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    neck="Twilight Torque",
+    waist="Nierenschutz",
+    left_ear="Cryptic Earring",
+    right_ear="Thureous Earring",
+    left_ring="Eihwaz Ring",
+    right_ring="Shadow Ring",
+    back="Philidor Mantle",
+    PDT={
+    head="Sulevia's Mask +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    }
+	}
+	
+	sets.Engaged['DEATH'] = {
+		baseset=sets.Engaged.PDT,
+    ammo="Paeapua",
+    head="Sulevia's Mask +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    neck="Twilight Torque",
+    waist="Nierenschutz",
+    left_ear="Cryptic Earring",
+    right_ear="Thureous Earring",
+    left_ring="Eihwaz Ring",
+    right_ring="Shadow Ring",
+    back="Philidor Mantle",
+    PDT={
+    head="Sulevia's Mask +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands="Sulev. Gauntlets +1",
+    legs="Sulevi. Cuisses +1",
+    feet="Sulev. Leggings +2",
+    }
+	}
+
+	sets.Idle['PDTACC'] = {
+		baseset=sets.Idle.PDT,
+	}
+	
+	sets.Engaged['PDTACC'] = {
+		baseset=sets.Engaged.PDT,
+	}
+
+	sets.Idle['HPDT'] = {
+		baseset=sets.Idle.PDT,
+		PDT={
+		
+		}
+		
+	}
+	
+	sets.Engaged['HPDT'] = {
+		baseset=sets.Engaged.HPDT,
+		PDT={
+		
+		}
+		
+	}
+	
+	sets.Idle['MDT'] = {
+		baseset=tempIdleset,
+				ammo="Demonry Stone",
+				head="Rev. Coronet +1",
+				neck="Twilight Torque",
+				left_ear="Sanare Earring",
+   			body="Chozoron coselete",
+				hands="Rev. Gauntlets +1",
+    		left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+				right_ring="Defending Ring",
+				back="Mubvum. Mantle",
+				waist="Creed Baudrier",
+				legs="Rev. Breeches +1",
+				feet="Cab. Leggings +1",
+				PDT={
+					head="Rev. Coronet +1",
+					body="Cab. Surcoat +1",
+					hands="Rev. Gauntlets +1",
+					legs="Rev. Breeches +1",
+					feet="Cab. Leggings +1"
+				}
+	}
+	
+	sets.Engaged['MDT'] = {
+		baseset=tempEngagedset,
+				ammo="Demonry Stone",
+				head="Rev. Coronet +1",
+				neck="Creed Collar",
+--				neck="Twilight Torque",
+				left_ear="Sanare Earring",
+				right_ear="trux earring",
+   		  body="Chozoron coselete",
+				hands="Rev. Gauntlets +1",
+    		left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+				right_ring="Defending Ring",
+				back="Mubvum. Mantle",
+				waist="Creed Baudrier",
+				legs="Rev. Breeches +1",
+				feet="Cab. Leggings +1",
+				PDT={
+					head="Rev. Coronet +1",
+					body="Cab. Surcoat +1",
+					hands="Rev. Gauntlets +1",
+					legs="Rev. Breeches +1",
+					feet="Cab. Leggings +1"
+				}
+	}
+	
+	sets.Idle['HMDT'] = {
+		baseset=sets.Idle.MDT,
+		PDT={
+		
+		}
+		
+		
+	}
+	
+	sets.Engaged['HMDT'] = {
+		baseset=sets.Engaged.MDT,
+		PDT={
+		
+		}
+		
+		
+	}
+	
+	
+	sets.Idle['TWILIGHT'] = {
+		baseset=sets.Idle['PDT'],
+		head='Twilight Helm',
+		body='Twilight Mail',
+		PDT={
+			head='Twilight Helm',
+			body='Twilight Mail'
+		}
+	}
+	
+	sets.Engaged['TWILIGHT'] = {
+		baseset=sets.Engaged['PDT'],
+		head='Twilight Helm',
+		body='Twilight Mail',
+		PDT={
+			head='Twilight Helm',
+			body='Twilight Mail'
+		}	
+	}
+	
+	sets['str'] = {
+    head="Yaoyotl Helm",
+    body="Cizin mail +1",
+    hands="Umuthi gloves",
+    legs="Cab. Breeches +1",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    feet="Whirlpool Greaves",
+	}
+	
+	sets['da'] = {
+    ammo="Paeapua",
+    head="Yaoyotl Helm",
+    body="Cab. Surcoat +1",
+    legs="Cab. Breeches +1",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back="Atheling Mantle"
+	}
+	
+	sets['mnd'] = {
+    head="Rev. Coronet +1",
+    body="Cab. Surcoat +1",
+    hands="Rev. Gauntlets +1",
+    legs="Cab. Breeches +1",
+    feet="Cab. Leggings +1",
+    left_ring="Aquasoul Ring",
+    right_ring="Aquasoul Ring"
+	}
+	
+	sets['mab'] = {
+    ammo="Dosis Tathlum",
+    head={ name="Jumalik Helm", augments={'MND+10','"Mag.Atk.Bns."+15','Magic burst dmg.+10%','"Refresh"+1',}},
+    neck="Eddy Necklace",
+    left_ear="Friomisi Earring",
+    right_ear="Crematio Earring",
+    ammo="Dosis Tathlum",
+    neck="Eddy Necklace",
+    right_ring="Acumen Ring",
+	}
+	
+	sets['vit'] = {
+    ammo="Bibiki Seashell",
+    head="Ighwa Cap",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands={ name="Cab. Gauntlets +1", augments={'Enhances "Chivalry" effect',}},
+    legs={ name="Cab. Breeches +1", augments={'Enhances "Invincible" effect',}},
+    feet="Rev. Leggings +1",
+    neck="Shield Collar",
+    left_ring="Provocare Ring",
+    right_ring="Terrasoul Ring",
+    back="Valor Cape",
+	}
+	
+	sets['WS'] = {}
+	sets.WS['Fast Blade'] = sets.da
+	sets.WS['Burning Blade'] = sets.mab
+	sets.WS['Red Lotus Blade'] = sets.mab
+	sets.WS['Flat Blade'] = sets.da
+	sets.WS['Shining Blade'] = sets.da
+	sets.WS['Seraph Blade'] = {
+    ammo="Dosis Tathlum",
+    head="Rev. Coronet +1",
+    body="Phorcys Korazin",
+    hands={ name="Cab. Gauntlets +1", augments={'Enhances "Chivalry" effect',}},
+    legs={ name="Cab. Breeches +1", augments={'Enhances "Invincible" effect',}},
+    feet={ name="Cab. Leggings +1", augments={'Enhances "Guardian" effect',}},
+    neck="Fotia Gorget",
+    waist="Fotia belt",
+    left_ear="Friomisi Earring",
+    right_ear="Moonshade Earring",
+    left_ring={ name="Demon's Ring", augments={'"Mag.Atk.Bns."+3','Mag. crit. hit dmg. +2%','"Resist Curse"+2',}},
+    right_ring={ name="Demon's Ring", augments={'"Mag.Atk.Bns."+3','Light resistance-6 Dark resistance+6','"Resist Curse"+2',}},
+    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	sets.WS['Circle Blade'] = sets.str
+	sets.WS['Spirits Within'] = {}
+	sets.WS['Vorpal Blade'] = {
+    ammo="Paeapua",
+    head="Yaoyotl Helm",
+    body="Phorcys Korazin",
+    hands="Umuthi Gloves",
+    legs={ name="Cab. Breeches +1", augments={'Enhances "Invincible" effect',}},
+    feet="Whirlpool Greaves",
+    neck="Fotia Gorget",
+    waist="Fotia belt",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	
+	sets.WS['Swift Blade'] = {
+    ammo="Paeapua",
+--    head="Rev. Coronet +1",
+		head="Sukeroku Hachimaki",
+    body={ name="Acro Surcoat", augments={'Accuracy+17 Attack+17','"Dbl.Atk."+3','Sklchn.dmg.+5%',}},
+    hands="Umuthi Gloves",
+    legs={ name="Cab. Breeches +1", augments={'Enhances "Invincible" effect',}},
+    feet={ name="Cab. Leggings +1", augments={'Enhances "Guardian" effect',}},
+    neck="Asperity Necklace",
+    waist="Windbuffet belt +1",
+    left_ear="Moonshade Earring",
+    right_ear="Brutal Earring",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	
+	sets.WS['Savage Blade'] = {
+    ammo="Amar Cluster",
+    head={ name="Valorous Mask", augments={'Accuracy+12','Weapon skill damage +5%','DEX+7','Attack+25',}},
+    body={ name="Valorous Mail", augments={'Attack+29','Weapon skill damage +4%','STR+10',}},
+    hands="Sulev. Gauntlets +1",
+    legs={ name="Valor. Hose", augments={'Accuracy+8','Weapon skill damage +5%','Attack+6',}},
+    feet={ name="Valorous Greaves", augments={'Accuracy+26','Weapon skill damage +5%','STR+5','Attack+6',}},
+    neck="Fotia Gorget",
+    waist="Fotia Belt",
+    left_ear={ name="Moonshade Earring", augments={'"Mag.Atk.Bns."+4','TP Bonus +25',}},
+    right_ear="Ishvara Earring",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+
+	sets.WS['Knights of Round'] = {
+    ammo="Paeapua",
+    head="Rev. Coronet +1",
+    body="Phorcys Korazin",
+    hands="Umuthi Gloves",
+    legs={ name="Cab. Breeches +1", augments={'Enhances "Invincible" effect',}},
+    feet={ name="Cab. Leggings +1", augments={'Enhances "Guardian" effect',}},
+    neck="Asperity Necklace",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	
+	sets.WS['Atonement'] = {
+		baseset=sets.enmity,
+	    body={ name="Odyss. Chestplate", augments={'"Mag.Atk.Bns."+8','Weapon skill damage +4%','MND+13','Mag. Acc.+6',}},
+	    hands={ name="Odyssean Gauntlets", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','CHR+8','Mag. Acc.+13','"Mag.Atk.Bns."+14',}},
+	    legs={ name="Odyssean Cuisses", augments={'Mag. Acc.+19 "Mag.Atk.Bns."+19','Weapon skill damage +1%','MND+4','Mag. Acc.+5','"Mag.Atk.Bns."+12',}},
+	    feet="Sulev. Leggings +2",
+	    neck="Fotia Gorget",
+	    waist="Fotia belt",
+	    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	
+	sets.WS['Sanguine Blade'] = {
+		baseset=sets.mab,
+		head="Rev. Coronet +1",	
+		neck="Phalaina Locket",
+		body="Cab. Surcoat +1",
+		hands="Rev. Gauntlets +1",
+		left_ring="Aquasoul Ring",
+		right_ring="Aquasoul Ring",
+		legs="Cab. Breeches +1",
+		feet="Cab. Leggings +1",
+		back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	
+	sets.WS['Chant du Cygne'] = {
+		baseset=sets.da,
+    ammo="Paeapua",
+    head="Yaoyotl Helm",
+--    body="Cab. Surcoat +1",
+		body="Uac jerkin",
+    hands="Odyssean gauntlets",
+    legs="Caballarius Breeches +1",
+    feet="Cizin Greaves +1",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Rajas Ring",
+    right_ring="Thundersoul Ring",
+    --back="Atheling Mantle",
+    back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+	}
+	
+	sets.WS['Requiescat'] = {
+		baseset=sets.da,
+				ammo="Paeapua",
+				head="Yaoyotl Helm",
+				neck="Asperity Necklace",
+				left_ear="Steelflash Earring",
+				right_ear="Bladeborn Earring",
+				body="Cab. Surcoat +1",
+				hands="Rev. Gauntlets +1",
+				left_ring="Provocare Ring",
+				right_ring="Aquasoul Ring",
+				back={ name="Rudianos's Mantle", augments={'STR+20','Accuracy+20 Attack+20','Weapon skill damage +10%',}},
+				waist="Windbuffet belt +1",
+				legs="Cab. Breeches +1",
+				feet="Cizin Greaves +1"
+	}
+	
+	sets['JA'] = {}
+	
+	sets.JA['Invincible'] = {
+		baseset=sets.enmity,
+				legs="Cab. Breeches +1",
+	}
+	
+	sets.JA['Shield Bash'] = {
+		baseset=sets.enmity,
+				body="Cab. Gauntlets +1",
+	}
+	
+	sets.JA['Holy Circle'] = {
+		baseset=sets.enmity,
+				feet="Rev. Leggings +1"
+	}
+	
+	sets.JA['Sentinel'] = {
+		baseset=sets.enmity,
+				legs="Cab. Leggings +1",
+	}
+	
+	sets.JA['Cover'] = {
+		baseset=sets.enmity,
+				head="Rev. Coronet +1",
+	}
+	
+	sets.JA['Rampart'] = {
+		precast={head="cab. coronet +1"},
+		baseset=sets.vit
+	}
+	
+	sets.JA['Divine Emblem'] = {
+		baseset=sets.enmity,
+		feet="Chevalier's Sabatons"
+	}
+	
+	sets.JA['Sepulcher'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Palisade'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Intervene'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Fealty'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Chivalry'] = {
+		baseset=sets.enmity,
+		hands={ name="Cab. Gauntlets +1", augments={'Enhances "Chivalry" effect',}},		
+	}
+
+	-- Warrior sub	
+	sets.JA['Beserk'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Warcry'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Defender'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Aggressor'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Provoke'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	-- Dancer sub
+	
+	sets.dancer = {
+		baseset=sets.enmity
+	}
+	
+	sets.JA['Drain Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Drain Samba II'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Aspir Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets['waltz'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Curing Waltz'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Curing Waltz II'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Curing Waltz III'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Healing Waltz'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Divine Waltz'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Spectral Jig'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Haste Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets['steps'] = {
+		baseset=sets.dancer,
+		right_ear="Choreia Earring"
+	}
+
+	sets.JA['Quickstep'] = {
+		baseset=sets.steps
+	}
+
+	sets.JA['Box Step'] = {
+		baseset=sets.steps
+	}
+
+	sets.JA['Stutter Step'] = {
+		baseset=sets.steps
+	}
+	
+	sets['flourishes'] = {
+		baseset=sets.dancer
+	}
+	
+	sets.JA['Animated Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	sets.JA['Violent Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	sets.JA['Reverse Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	-- Rune Fencer
+	sets.JA['Swipe'] = sets.mab
+	sets.JA['Lunge'] = sets.mab
+	
+	sets.JA['Ignis'] = {}
+	sets.JA['Gelus'] = {}
+	sets.JA['Flabra'] = {}
+	sets.JA['Tellus'] = {}
+	sets.JA['Sulpor'] = {}
+	sets.JA['Unda'] = {}
+	sets.JA['Lux'] = {}
+	sets.JA['Tenebrae'] = {}
+	
+	sets.JA['Swordplay'] = {}
+	sets.JA['Vallation'] = {}
+	sets.JA['pflug'] = {}
+	
+	-- Magic
+	
+	sets['fast cast'] = {
+		precast={
+				ammo="Sapience Orb",
+				head="Cizin Helm +1",
+				left_ear="Etiolation Earring",
+				right_ear="Loquac. Earring",
+				left_ring="Kishar Ring",
+				right_ring = "Prolix Ring",
+				legs="Enif Cosciales"
+		},
+		basesets={sets.Engaged['PDT']}
+	}
+	
+	sets['enmity fast cast'] = {
+		baseset=sets['fast cast'],
+		precast={
+				head="Cizin Helm +1",
+				left_ear="Etiolation Earring",
+				right_ear="Loquac. Earring",
+				body="Rev. Surcoat +1",
+				hands={ name="Xaddi Gauntlets", augments={'Accuracy+15','"Store TP"+3','"Dbl.Atk."+2',}},
+				legs="Rev. Breeches +1",
+				feet="Cab. Leggings +1"
+		}
+	}
+	
+	sets['spell interruption rate down'] = {
+    ammo="Staunch Tathlum",
+    legs={ name="Founder's Hose", augments={'MND+10','Mag. Acc.+15','Attack+15','Breath dmg. taken -5%',}},
+    feet={ name="Odyssean Greaves", augments={'"Mag.Atk.Bns."+25','Damage taken-2%','DEX+3','Accuracy+12','Attack+12',}},
+    right_ear="Halasz Earring",
+    left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    right_ring="Evanescence Ring",
+	}
+	
+	sets['MA'] = {}
+	
+	sets.MA['Cure'] = {
+				baseset=sets['fast cast'],
+				precast={left_ear="Nourishing earring +1",right_ear="Nourishing earring"},
+    ammo="Bibiki Seashell",
+    head="Rev. Coronet +1",
+    body={ name="Cab. Surcoat +1", augments={'Enhances "Fealty" effect',}},
+    hands={ name="Cab. Gauntlets +1", augments={'Enhances "Chivalry" effect',}},
+    legs="Founder's hose",
+    feet={ name="Cab. Leggings +1", augments={'Enhances "Guardian" effect',}},
+    neck="Phalaina Locket",
+    waist="Creed Baudrier",
+    left_ear="Nourish. Earring +1",
+    left_ring="Kunaji Ring",
+    right_ring="Asklepian Ring",
+    back="Valor Cape",
+--
+    ammo="Staunch tathlum",
+    right_ear="Halasz Earring",
+    left_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    right_ring="Evanescence Ring",
+	}
+
+	sets.MA['Cure II'] = sets.MA.Cure
+
+	sets.MA['Cure III'] = sets.MA.Cure
+
+	sets.MA['Cure IV'] = sets.MA.Cure
+
+	sets.MA['Holy'] = {
+		basesets={sets['fast cast'], sets.mab}
+	}
+
+	sets.MA['Holy II'] = {
+		basesets={sets['fast cast'], sets.mab}
+	}
+
+	sets.MA['Raise'] = sets['fast cast']
+
+	sets.MA['Banish'] = {
+		basesets={sets['fast cast'], sets.mab}
+	}
+
+	sets.MA['Banish II'] = {
+		basesets={sets['fast cast'], sets.mab}
+	}
+
+	sets.MA['Flash'] = sets['enmity fast cast']
+
+	sets.MA['Enlight'] = {
+		basesets={sets['fast cast'],sets['spell interruption rate down'],},
+	}
+	sets.MA['Enlight II'] = {
+		basesets={sets['fast cast'],sets['spell interruption rate down'],},
+	}
+
+	sets.MA['Protect'] = {
+		basesets={sets['fast cast'],sets['spell interruption rate down'],},
+	}
+
+	sets.MA['Protect II'] = sets.MA.Protect
+
+	sets.MA['Protect III'] = sets.MA.Protect
+
+	sets.MA['Protect IV'] = sets.MA.Protect
+	
+	sets.MA['Protect V'] = sets.MA.Protect
+
+	sets.MA['Shell'] = {
+		basesets={sets['fast cast'],sets['spell interruption rate down'],},
+	}
+
+	sets.MA['Shell II'] = sets.MA.Shell
+
+	sets.MA['Shell III'] = sets.MA.Shell
+	
+	sets.MA['Shell IV'] = sets.MA.Shell
+
+	sets.MA['Phalanx'] = {
+		basesets={sets['fast cast'],sets['fast cast'],sets['spell interruption rate down'],},
+		head="Yorium Barbuta",
+		back="Weard mantle",
+		waist="Brocade obi",
+		legs="Reverence breeches +1",
+	}
+
+	sets.MA['Reprisal'] = {
+		basesets={sets['fast cast'],sets['fast cast'],sets['spell interruption rate down'],},
+		legs="Founder's Hose"	
+	}
+	
+	sets.MA['Crusade'] = {
+		basesets={sets['fast cast'],sets['fast cast'],sets['spell interruption rate down'],},
+		legs="Founder's Hose"	
+	}
+
+	sets.MA['Cocoon'] = sets['enmity fast cast']
+
+	sets.MA['Blank Gaze'] = sets['enmity fast cast']
+
+	sets.MA['Battle Dance'] = sets['enmity fast cast']
+
+	sets.MA['Jettatura'] = sets['enmity fast cast']
+
+	sets.MA['Haste'] = sets['fast cast']
+
+	sets.MA['Refresh'] = sets['fast cast']
+
+	sets.MA['Aquaveil'] = sets['fast cast']
+
+	sets.MA['Regen'] = sets['fast cast']
+
+	sets.MA['Regen II'] = sets['fast cast']
+
+	sets.MA['Diaga'] = {
+		basesets={sets['fast cast'], sets['enmity']},
+	}
+
+	sets.MA['WhiteMagic'] = {
+		baseset=sets['fast cast']
+	}
+
+	sets.MA['DivineMagic'] = {
+		baseset=sets['fast cast'],
+				body="Rev. Surcoat +1",	
+	}
+	
+	sets.MA['EnhancingMagic'] = {
+				waist="Siegel Sash",
+				legs="Rev. Breeches +1",	
+	}
+
+	sets.MA['HealingMagic'] = {
+		baseset=sets['fast cast']
+	}
+
+	sets.MA['BlueMagic'] = {
+		baseset=sets['fast cast']
+	}
+
+	-- Equip this gear when certain buffs are active
+	
+	sets['buff active'] = {}
+	
+	sets['buff active']['Cover'] = {
+				body="Cab. Surcoat +1",		
+	}
+	
+	sets['ITEM'] = {}
+	
+	sets.ITEM['Remedy'] = {}
+	sets.ITEM['Holy Water'] = {
+		left_ring="Ephedra Ring",
+		right_ring="Purity Ring"
+	}
+	
+	sets['react'] = {}
+	sets.react['abilities'] = {}
+	sets.react['spells'] = {}
+	sets.react['Death'] = {
+--		Head="Flawless Ribbon",
+--		left_ring="Shadow Ring",
+--		right_ring="Eihwaz Ring"
+	}
+	
+	sets.react.spells['Death'] = sets.react.Death
+	sets.react.abilities['Perdition'] = sets.react.Death
+--	sets.react.spells['Cursna'] = {right_ring="Saida Ring"}
+end

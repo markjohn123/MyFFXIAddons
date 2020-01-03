@@ -1,0 +1,34 @@
+--[[
+	A library for matching events to actions
+	
+	To add a handler, insert an array into event_action with the following format
+	{
+		["name"]   -- This is the name of a monster spell or tp ability, or the actionmessage name
+		["type"]   -- spell, ability, or action_message
+		["action"] -- The function to execute for this event
+		           -- The function's signature is:
+		           -- function (id, name, type)
+		              id is the id of the player or mob that initiated this action
+		
+	}
+]]
+
+local event_action = {}
+event_spell = 'spell'
+event_ability = 'ability'
+event_message = 'action_message'
+
+local debuffs ] {
+
+}
+
+windower.register_event('action', function(act)
+	local mob = windower.get_mob_by_id(act.actor_id)
+	
+	if mob then
+		
+	end
+end
+
+
+return event_action

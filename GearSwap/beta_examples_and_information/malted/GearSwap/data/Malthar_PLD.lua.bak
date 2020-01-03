@@ -1,0 +1,104 @@
+include('Malthar_gearswap_resources.lua')
+include('Malthar_PLD_SETS.lua')
+
+-- Valid states are NORMAL, PDT, MDT, HPDT, HMDT, and TWILIGHT
+battle_state = 'NORMAL'
+
+-- The weapon to quip
+weapon = 'aegis'
+
+function precast(spell)
+	-- Put together the precast set for the spell
+	local precast_set = nil
+
+	--if spell.recast > 0 then
+	--	windower.add_to_chat(6, tostring(spell.recast) .. ' more seconds till you can cast' .. spell.en)
+	--end
+	if sets[command_prefix_key[spell.prefix]][spell.en] ~= nil then
+		precast_set = build_baseset_sets('precast',sets[command_prefix_key[spell.prefix]][spell.en])
+	else
+		windower.add_to_chat(2, 'Malthar_pld.lua line 20: sets[command_prefix_key' .. '[' .. spell.prefix .. ']][' .. spell.en .. '] is nil')
+	end
+	
+	equip(precast_set)
+end
+
+function midcast(spell)
+	-- Put together the precast set for the spell
+	local midcast_set = nil
+	
+	if sets[command_prefix_key[spell.prefix]][spell.en] ~= nil then
+		midcast_set = build_baseset_sets('midcast',sets[command_prefix_key[spell.prefix]][spell.en])
+	else
+		windower.add_to_chat(2, 'Malthar_pld.lua line 33: sets[command_prefix_key' .. '[' .. spell.prefix .. ']][' .. spell.en .. '] is nil')
+	end
+	
+	-- ToDo:  Handle pdt in pdt/mdt/etc sets
+	if T{'PDT', 'MDT', 'HPDT', 'HMDT'}:contains(battle_state) == true and
+	   sets[player.status][battle_state].PDT then		
+		midcast_set = set_combine(midcast_set, build_baseset_sets(nil,sets[player.status][battle_state].PDT),sets.weapons[weapon])
+		--windower.add_to_chat(2, 'Keeping PDT')
+	elseif battle_state == 'TWILIGHT' and
+	  sets[player.status][battle_state].TWILIGHT then
+		midcast_set = set_combine(midcast_set, build_baseset_sets(nil,sets[player.status][battle_state].TWILIGHT),sets.weapons[weapon])
+		--windower.add_to_chat(2, 'Keeping TWILIGHT')
+	end
+	
+	-- ToDo:  Handle twlight
+	equip(midcast_set)
+end
+
+function aftercast(spell)
+	if T{'Idle', 'Engaged', 'Resting'}:contains(player.status) then
+		equip(build_baseset_sets(nil,sets[player.status][battle_state]),sets.weapons[weapon])
+	end
+end
+
+function status_change(new,old)
+	if T{'Idle', 'Engaged', 'Resting'}:contains(new) then
+		equip(build_baseset_sets(nil,sets[new          ][battle_state]),sets.weapons[weapon])
+	end
+end
+
+function self_command(strarg)
+	local args = {}
+	local cmd = nil
+	
+	-- The arguments come as a single string.  Split it up into the args table
+	for arg in string.gmatch(strarg, "%S+") do
+		args[#args+1] = arg
+	end
+	
+	if table.length(args) > 0 then
+		cmd = string.lower(args[1])
+		
+		if cmd == 'weapon' and table.length(args) > 1 then
+			local weapon_name = ''
+			local space = ''
+			for count=2,table.length(args) do
+				weapon_name = weapon_name .. space .. args[count]
+				space = ' '
+			end
+			if table.containskey(sets.weapons, weapon_name) then
+				weapon = weapon_name
+				equip(sets.weapons[weapon])
+				windower.add_to_chat(2, 'Switched weapon to ' .. weapon)
+			else
+				windower.add_to_chat(3, weapon_name .. ' is an invalid value for weapon')
+			end
+		elseif cmd == 'battle_state'  and table.length(args) > 1 then
+			local temp_battle_state = string.upper(args[2])
+			if T{"NORMAL", "PDT", "MDT", "HPDT", "HMDT", "TWILIGHT"}:contains(temp_battle_state) then
+				battle_state = temp_battle_state
+				equip(build_baseset_sets(nil,sets[player.status][battle_state]),sets.weapons[weapon])
+				windower.add_to_chat(2, 'Switched battle state to ' .. battle_state)
+			else
+				windower.add_to_chat(3, temp_battle_state .. ' is an invalid value for battle_state')
+			end
+		else
+			windower.add_to_chat(3, 'Invalid command: ' .. cmd)	
+		end
+	else
+		windower.add_to_chat(3,	'No command passed')	
+	end
+end

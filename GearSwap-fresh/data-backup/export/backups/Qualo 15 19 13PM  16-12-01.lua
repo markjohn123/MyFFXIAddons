@@ -1,0 +1,16 @@
+sets.exported={
+    main="Tefnut Wand",
+    ammo="Hedgehog Bomb",
+    head="Nahtirah Hat",
+    body="Telchine Chas.",
+    hands="Telchine Gloves",
+    legs="Assiduity Pants",
+    feet="Regal Pumps",
+    neck="Enlightened Chain",
+    waist="Fucho-no-Obi",
+    left_ear="Nourish. Earring",
+    right_ear="Gwati Earring",
+    left_ring="Hale Ring",
+    right_ring={ name="Dark Ring", augments={'Phys. dmg. taken -1%',}},
+    back="Oretania's Cape",
+}

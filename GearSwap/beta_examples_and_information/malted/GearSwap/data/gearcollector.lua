@@ -1,0 +1,14 @@
+function gearcollector()
+	local bag_names = T{
+	  "safe",
+	  "storage",
+		"locker",
+		"sack",
+		"satchel",
+		"case",
+	}
+	
+	local bags = windower.ffxi.get_items()
+	
+	add_to_chat(5, "Items in inventory: " .. tostring(bags["count_inventory"]))
+end

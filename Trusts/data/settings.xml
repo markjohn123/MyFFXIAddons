@@ -1,0 +1,196 @@
+<?xml version="1.1" ?>
+<settings>
+    <global>
+        <auto>true</auto>
+        <language>English</language>
+        <sets>
+            <bardcrew>
+                <1>Yoran-Oran (UC)</1>
+                <2>Amchuchu</2>
+                <3>Shantotto II</3>
+                <4>Zeid II</4>
+                <5>Tenzen</5>
+            </bardcrew>
+            <bcnm>
+                <1>Yoran-Oran (UC)</1>
+                <2>Kupipi</2>
+                <3>Joachim</3>
+                <4>Amchuchu</4>
+                <5>Shantotto II</5>
+            </bcnm>
+            <behset>
+                <1>Ferreous Coffin</1>
+                <2>Moogle</2>
+                <3>Sakura</3>
+                <4>Star Sibyl</4>
+                <5>Kupofried</5>
+            </behset>
+            <blasters>
+                <1>Yoran-Oran (UC)</1>
+                <2>Qultada</2>
+                <3>Adelheid</3>
+                <4>Amchuchu</4>
+                <5>Shantotto II</5>
+            </blasters>
+            <blmset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Qultada</2>
+                <3>Shantotto II</3>
+                <4>Iroha II</4>
+                <5>Amchuchu</5>
+            </blmset>
+            <bstset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Amchuchu</2>
+                <3>Qultada</3>
+                <4>Shantotto II</4>
+                <5>Iroha II</5>
+            </bstset>
+            <default>
+                <1>Valaineral</1>
+                <2>Mihli Aliapoh</2>
+                <3>Tenzen</3>
+                <4>Adelheid</4>
+                <5>Joachim</5>
+            </default>
+            <dgrset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Qultada</2>
+                <3>Shantotto II</3>
+                <4>Iroha II</4>
+                <5>Amchuchu</5>
+            </dgrset>
+            <dncset>
+                <1>Yoran-Oran (UC)</1>
+                <2>AAEV</2>
+                <3>Shantotto II</3>
+                <4>Robel-Akbel</4>
+                <5>Koru-Moru</5>
+            </dncset>
+            <dragon>
+                <1>Qultada</1>
+                <2>Shantotto II</2>
+                <3>Iroha II</3>
+                <4>Ferreous Coffin</4>
+                <5>Selh&apos;teus</5>
+            </dragon>
+            <dragon2>
+                <1>Yoran-Oran (UC)</1>
+                <2>AAGK</2>
+                <3>Selh&apos;teus</3>
+                <4>Shantotto II</4>
+                <5>Iroha II</5>
+            </dragon2>
+            <drgset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Arciela II</2>
+                <3>Amchuchu</3>
+                <4>Iroha II</4>
+                <5>Shantotto II</5>
+            </drgset>
+            <dynaset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Qultada</2>
+                <3>Shantotto II</3>
+                <4>Gessho</4>
+                <5>Lilisette II</5>
+            </dynaset>
+            <melee>
+                <1>Shantotto II</1>
+                <2>Yoran-Oran (UC)</2>
+                <3>Qultada</3>
+                <4>Amchuchu</4>
+                <5>Makki-Chebukki</5>
+            </melee>
+            <melee2>
+                <1>Shantotto II</1>
+                <2>Yoran-Oran (UC)</2>
+                <3>Qultada</3>
+                <4>Amchuchu</4>
+                <5>Iron Eater</5>
+            </melee2>
+            <melee3>
+                <1>Shantotto II</1>
+                <2>Yoran-Oran (UC)</2>
+                <3>Qultada</3>
+                <4>Amchuchu</4>
+                <5>Arciela II</5>
+            </melee3>
+            <notank>
+                <1>Shantotto II</1>
+                <2>Yoran-Oran (UC)</2>
+                <3>Qultada</3>
+                <4>Iron Eater</4>
+                <5>Adelheid</5>
+            </notank>
+            <potset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Amchuchu</2>
+                <3>Qultada</3>
+                <4>Prishe II</4>
+                <5>Shantotto II</5>
+            </potset>
+            <qdncset>
+                <1>Yoran-Oran (UC)</1>
+                <2>AAEV</2>
+                <3>AAGK</3>
+                <4>Qultada</4>
+                <5>Shantotto II</5>
+            </qdncset>
+            <quetzset>
+                <1>Arciela II</1>
+                <2>Selh&apos;teus</2>
+                <3>Iroha II</3>
+                <4>Koru-Moru</4>
+                <5>Yoran-Oran (UC)</5>
+            </quetzset>
+            <samset>
+                <1>Yoran-Oran (UC)</1>
+                <2>Amchuchu</2>
+                <3>Shantotto II</3>
+                <4>Arciela II</4>
+                <5>Joachim</5>
+            </samset>
+            <samset2>
+                <1>AAEV</1>
+                <2>Yoran-Oran (UC)</2>
+                <3>Qultada</3>
+                <4>Shantotto II</4>
+                <5>Arciela II</5>
+            </samset2>
+            <soaset>
+                <1>Yoran-Oran (UC)</1>
+                <2>AAEV</2>
+                <3>Selh&apos;teus</3>
+                <4>Joachim</4>
+                <5>Shantotto II</5>
+            </soaset>
+            <undeadteam>
+                <1>Shantotto II</1>
+                <2>Yoran-Oran (UC)</2>
+                <3>Qultada</3>
+                <4>Amchuchu</4>
+                <5>Prishe II</5>
+            </undeadteam>
+            <whmset>
+                <1>Koru-Moru</1>
+                <2>AAEV</2>
+                <3>AAGK</3>
+                <4>Qultada</4>
+                <5>Shantotto II</5>
+            </whmset>
+            <whmset2>
+                <1>Amchuchu</1>
+                <2>Shantotto II</2>
+                <3>Iroha II</3>
+                <4>Qultada</4>
+                <5>Yoran-Oran (UC)</5>
+            </whmset2>
+        </sets>
+        <wait>
+            <aftercast>3</aftercast>
+            <retr>1.25</retr>
+            <retrall>3</retrall>
+        </wait>
+    </global>
+</settings>

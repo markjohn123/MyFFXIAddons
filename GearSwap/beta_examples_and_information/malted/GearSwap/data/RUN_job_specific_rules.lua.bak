@@ -1,0 +1,19 @@
+function precast_job_specific(spell,set)
+	local retSet = set
+	
+	return retSet
+end
+
+function midcast_job_specific(spell,set)
+	local retSet = set
+	
+	return retSet
+
+end
+
+function aftercast_job_specific(spell,set)
+	local retSet = set
+	
+	return retSet
+
+end

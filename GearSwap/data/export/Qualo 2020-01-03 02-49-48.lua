@@ -1,0 +1,17 @@
+sets.exported={
+    main="Odium",
+    sub={ name="Taming Sari", augments={'STR+1','"Treasure Hunter"+1',}},
+    ammo="Ginsen",
+    head={ name="Adhemar Bonnet", augments={'STR+10','DEX+10','Attack+15',}},
+    body={ name="Horos Casaque +1", augments={'Enhances "No Foot Rise" effect',}},
+    hands={ name="Herculean Gloves", augments={'"Repair" potency +2%','Phys. dmg. taken -4%','Accuracy+18 Attack+18','Mag. Acc.+12 "Mag.Atk.Bns."+12',}},
+    legs={ name="Samnuha Tights", augments={'STR+4','DEX+7','"Triple Atk."+2',}},
+    feet={ name="Herculean Boots", augments={'AGI+10','Mag. Acc.+26','Magic Damage +6','Accuracy+19 Attack+19','Mag. Acc.+6 "Mag.Atk.Bns."+6',}},
+    neck="Lissome Necklace",
+    waist="Sarissapho. Belt",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Apate Ring",
+    right_ring="K'ayres Ring",
+    back={ name="Toetapper Mantle", augments={'"Store TP"+2',}},
+}

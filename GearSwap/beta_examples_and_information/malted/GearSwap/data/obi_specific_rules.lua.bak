@@ -1,0 +1,88 @@
+twilight_cape_jobs = {'WHM', 'BLM', 'RDM', 'BRD', 'SMN', 'BLU', 'PUP', 'SCH', 'GEO'}
+
+function WS_specific_obi(spell,set)
+	local retSet = set
+	local elemental_weaponskills = T{
+		["Cloudsplitter"] ="Thunder",
+		["Primal Rend"]   ="Light",
+--		["Leaden Salute"] ="Darkness",
+		["Seraph Blade"]  ="Light",
+	}
+	
+	local synonyms = T{
+		["Fire"]    	= "Firestorm",
+		["Earth"]    	= "Sandstorm",
+		["Water"]    	= "Rainstorm",
+		["Wind"]    	= "Windstorm",
+		["Ice"]    		= "Hailstorm",
+		["Thunder"] 	= "Thunderstorm",
+		["Light"]  		= "Aurorastorm",
+		["Dark"]    	= "Voidstorm",
+	}
+	
+	if spell.prefix == '/weaponskill' 
+	then
+		-- Elemental weaponskills
+		if 	elemental_weaponskills[spell.en]
+	   		and sets.elemental_obi
+	   		and T{
+	        	world.day_element,
+	   	     	world.weather_element,
+	   	     	buffactive[synonyms[elemental_weaponskills[spell.en]]]
+	   	  }:contains(elemental_weaponskills[spell.en])
+	  then
+			retSet = set_combine(retSet,sets.elemental_obi)
+		else -- if not elemental_weaponskills[spell.en] then
+		-- All other weaponskills -- And ignore elemental weaponskills
+			if sets.weaponskill_belt then
+				retSet = set_combine(retSet,sets.weaponskill_belt)
+			end
+--			add_to_chat(5, "Here1")
+			if sets.weaponskill_gorget then
+--			add_to_chat(5, "Here2")
+				retSet = set_combine(retSet,sets.weaponskill_gorget)
+--				print_set(5,retSet)
+--				add_to_chat(5,"Here3")
+			end
+		end
+	end
+
+	return retSet
+end
+
+function MA_specific_obi(spell,set)
+	local retSet = set
+	local synonyms = {
+		["Fire"]    	= "Firestorm",
+		["Earth"]    	= "Sandstorm",
+		["Water"]    	= "Rainstorm",
+		["Wind"]    	= "Windstorm",
+		["Ice"]    		= "Hailstorm",
+		["Thunder"] 	= "Thunderstorm",
+		["Light"]  		= "Aurorastorm",
+		["Dark"]    	= "Voidstorm",
+	}
+
+	if spell.prefix == '/magic'
+	   and spell.skill == "Elemental Magic"
+	   and sets.elemental_obi
+	   and T{
+	        	world.day_element,
+	   	     	world.weather_element,
+	   	     	buffactive[synonyms[spell.element]]
+	   	  }:contains(spell.element)
+	then
+		retSet = set_combine(retSet,sets.elemental_obi)
+--	add_to_chat(5,"begin")
+--	print_set(sets.elemental_obi)
+--	add_to_chat(5,"end")
+	end
+
+	return retSet
+end
+
+function JA_specific_obi(spell,set)
+	local retSet = set
+	
+	return retSet
+end

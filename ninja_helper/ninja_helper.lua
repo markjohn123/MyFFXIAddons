@@ -1,0 +1,535 @@
+require('LuaU')
+config = require('config')
+require('strings')
+require('tables')
+logger = require('logger')
+texts = require('texts')
+isbusy = require('isbusy')
+buffs = require('res/buffs')
+job_abilities = require('res/abilities')
+spells = require('res/spells')
+jobs = require('res/jobs')
+items = require('res/items')
+require('andreaslibs/auto_shadows')
+require('andreaslibs/resource_functions')
+skillchain_levels = require('andreaslibs/skillchain_levels')
+skillchains = require('andreaslibs/skillchains')
+require('andreaslibs/auto_weaponskill')
+require('andreaslibs/auto_holy_water')
+require('andreaslibs/auto_echo')
+
+buff_names = {}
+spell_names = {}
+song_names = nil
+job_ability_names = {}
+job_names = {}
+
+_addon.name = 'Ninja Helper'
+_addon.author = 'Andreas Sheriff'
+_addon.version = '1'
+_addon.commands = {'ninja_helper', 'nh', 'ni'}
+
+doautoni = true
+doYoninInninType = 'yonin' -- yonin or innin or nil (for off)
+doEnmitySpellType = 'gekka' -- gekka increases enmity; yain decreases ; nil disables
+doAutoSubtleBlow = false
+doAutoStoreTP = true
+doAutoBerserk = true
+doAutoAggressor = true
+doAutoShadows = true
+doAutoMigawari = false
+
+shadows_required = 1
+
+for_job = "NIN"
+
+do_auto_weaponskills = false
+mobhp_ws_pct = false -- Percent at which to weaponskill for single weaponskills
+default_weaponskill_tp = 1000
+weaponskill_distance = 4
+keep_aftermath_up = false
+aftermath_level = 3
+aftermath_weaponskill = nil
+weaponskills = "Blade: Metsu"
+weaponskills = { "Blade: Shun", 
+                 "Blade: Metsu"} 
+autows_forjob = "NIN"
+
+
+tShadows = nil
+tInninYonin = nil
+tSubtleBlow = nil
+tStoreTP = nil
+tGainBuff = nil
+
+buff_names = {}
+spell_names = {}
+song_names = nil
+job_ability_names = {}
+job_names = {}
+item_names = {}
+
+logic = {
+	['true'] = true,
+	['false'] = false,
+	['yes'] = true,
+	['no'] = false,
+	['on'] = true,
+	['off'] = false,
+	['y'] = true,
+	['n'] = false,
+}
+function init_abilities()
+	auto_abilities = {
+		['Meditate'] =	{['enabled']=true,['requireengaged']=false,['statusid']=nil,['abilityid']=job_ability_names['Meditate'], ['requiresub']='SAM',  ['target']='<me>'},
+		['Swordplay']=	{['enabled']=true,['requireengaged']=true, ['statusid']=nil,['abilityid']=24, ['requiresub']='RUN',['target']='<me>'},
+		['Lux']=				{['enabled']=true,['requireengaged']=true, ['statusid']=nil,['abilityid']=10, ['requiresub']='RUN',['target']='<me>'},
+		['Lunge']=			{['enabled']=true,['requireengaged']=true, ['statusid']=nil,['abilityid']=25, ['requiresub']='RUN',['target']='<t>'},
+		['Swipe']=			{['enabled']=true,['requireengaged']=true, ['statusid']=nil,['abilityid']=241,['requiresub']='RUN',['target']='<t>'},
+		['Vallation']=	{['enabled']=true,['requireengaged']=true, ['statusid']=nil,['abilityid']=23, ['requiresub']='RUN',['target']='<me>'},
+		['Pflug']=			{['enabled']=true,['requireengaged']=true, ['statusid']=nil,['abilityid']=59, ['requiresub']='RUN',['target']='<me>'},
+	}
+end
+
+function init()
+	for buffid, buffinfo in pairs(buffs) do
+		buff_names[buffinfo.en] = buffid
+	end
+	
+	for spellid, spellinfo in pairs(spells) do
+		spell_names[spellinfo.en] = spellid
+	end
+
+	for ablilityid, abilityinfo in pairs(job_abilities) do
+			job_ability_names[abilityinfo.en] = abilityinfo.recast_id
+	end
+	job_ability_names['Berserk'] = 1
+
+	for jobid, jobinfo in pairs(jobs) do
+		job_names[jobinfo.ens] = jobid
+	end	
+
+	for itemid, iteminfo in pairs(items) do
+		item_names[iteminfo.en] = iteminfo.id
+	end
+	
+	init_abilities()
+end
+
+lua_loop = nil
+windower.register_event('load', function()
+	tShadows = texts.new(' ')
+	tInninYonin = texts.new(' ')
+	tSubtleBlow = texts.new(' ')
+	tStoreTP = texts.new(' ')
+	tGainBuff = texts.new('Gained Buff: ${buff}')
+	tTools = texts.new('Shihei=${shihei} (Shadows)\n' .. 
+	                   'Inoshishinofudo=${ino} (Elemental)\n' ..
+	                   'Shikanofudo=${shika} (Enhancing)\n' ..
+	                   'Chonofuda=${cho} (Enfeebling)')
+	
+	texts.pos(tShadows,10,200)
+	texts.pos(tInninYonin,10,220)
+	texts.pos(tSubtleBlow,10,240)
+	texts.pos(tStoreTP,10,260)
+	texts.pos(tGainBuff,10,280)
+	texts.pos(tTools, 20, 700)
+	
+	--texts.visible(tShadows,true)
+	--texts.visible(tInninYonin,true)
+	--texts.visible(tSubtleBlow,true)
+	--texts.visible(tStoreTP,true)
+	--texts.visible(tGainBuff,true)
+
+	init()
+	lua_loop = coroutine.schedule(infinity_loop, 1)
+	
+	if not lua_loop then
+		windower.add_to_chat(2,'Failed to create infinity loop.')
+	end
+
+end)
+
+windower.register_event('unload', function()
+	if lua_loop then
+		coroutine.close(lua_loop)
+	end
+end)
+
+
+
+
+function autoYoninInnin()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_ability_recasts()
+	
+	if true 
+	   and player ~= nil and player.status ~= nil and player.status == 1 and canDoAbilities() == true 
+	   and doYoninInninType ~= nil 
+	then
+		if 			string.lower(string.trim(doYoninInninType)) == 'yonin' 
+		        and recasts[job_ability_names['Yonin']] == 0 
+		        and table.contains(player.buffs, buff_names['Yonin']) == false then
+			windower.send_command('input /ja yonin <me>')
+			retVal = true
+		elseif  string.lower(string.trim(doYoninInninType)) == 'innin'
+		        and recasts[job_ability_names['Innin']] == 0 
+		        and table.contains(player.buffs, buff_names['Innin']) == false then
+			windower.send_command('input /ja innin <me>')
+			retVal = true
+		elseif recasts[job_ability_names['Issekigan']] == 0 
+					 and table.contains(player.buffs, buff_names['Yonin']) == true
+		then
+			windower.send_command('input /ja Issekigan <me>')
+			retVal = true
+		else
+			--windower.add_to_chat(5, "Unknown doYoninInninType = " .. doYoninInninType)
+		end
+	end
+	tInninYonin.text=tostring(retVal)
+	return retVal
+end
+
+function autoMigawari()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_spell_recasts()
+	
+	--windower.add_to_chat(5, "recasts['Migawari: Ichi']=" .. tostring(recasts["Migawari: Ichi"]))
+	
+	if true 
+	   and player ~= nil 
+	   and player.status ~= nil 
+	   and player.status == 1 
+	   and canDoSpells() == true 
+	   and doAutoMigawari
+	   and has_item(item_names["Shikanofuda"])
+	   and recasts[spell_names["Migawari: Ichi"]] == 0 
+	   and table.contains(player.buffs, buff_names['Migawari']) == false
+	then
+		windower.send_command('input /ma "Migawari: Ichi" <me>')
+		retVal = true
+	end
+	
+	return retVal
+end
+
+function autoEnmitySpell()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_spell_recasts()
+	
+	
+	if true 
+	   and player ~= nil 
+	   and player.status ~= nil 
+	   and player.status == 1 
+	   and canDoSpells() == true 
+	   and doEnmitySpellType ~= nil 
+	   and has_item(item_names["Shikanofuda"])
+	then
+		-- Let's modify enmityspeltype depending on whether innin or yonin is up
+		local tmpEnmTypeSpell = doEnmitySpellType
+		if T{"gekka", "yain"}:contains(tmpEnmTypeSpell) then
+			if table.contains(player.buffs, buff_names['Innin']) == true then
+				tmpEnmTypeSpell= "yain"
+			elseif table.contains(player.buffs, buff_names['Yonin']) then
+				tmpEnmTypeSpell = "gekka"
+			end
+		end
+		
+		if 			string.lower(string.trim(tmpEnmTypeSpell)) == 'gekka' 
+		        and recasts[spell_names['Gekka: Ichi']] == 0 
+		        and table.contains(player.buffs, buff_names['Enmity Boost']) == false 
+		then
+			windower.send_command('input /ma "Gekka: Ichi" <me>')
+			retVal = true
+		elseif  string.lower(string.trim(tmpEnmTypeSpell)) == 'yain'
+		        and recasts[spell_names['Yain: Ichi']] == 0 
+		        and table.contains(player.buffs, buff_names['Pax']) == false 
+		then
+			windower.send_command('input /ma "Yain: Ichi" <me>')
+			retVal = true
+		else
+			--windower.add_to_chat(5, "Unknown doYoninInninType = " .. doYoninInninType)
+		end
+	end
+	return retVal
+end
+
+
+
+function autoSubtleBlow()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_spell_recasts()
+	
+	if player ~= nil 
+	   and player.status ~= nil 
+	   and player.status == 1 
+	   and canDoSpells() == true 
+	   and doAutoSubtleBlow == true 
+	   and table.contains(player.buffs,buff_names['Subtle Blow Plus'])== false 
+	   and has_item(item_names["Shikanofuda"])
+	   and recasts[spell_names['Myoshu: Ichi']] == 0 then
+		windower.send_command('input /ma "Myoshu: Ichi" <me>')
+		retVal = true
+	end
+	tSubtleBlow.text=tostring(retVal)	
+	return retVal
+end
+
+function autoStoreTP()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_spell_recasts()
+	
+	
+	if player ~= nil 
+	   and player.status ~= nil 
+	   and player.status == 1 
+	   and canDoSpells() == true 
+	   and doAutoStoreTP == true 
+	   and table.contains(player.buffs,buff_names['Store TP'])== false 
+	   and has_item(item_names["Shikanofuda"])
+	   and recasts[spell_names['Kakka: Ichi']] == 0 then
+			windower.send_command('input /ma "Kakka: Ichi" <me>')
+			retVal = true
+	end
+	tStoreTP.text=tostring(retVal)
+	return retVal
+end
+
+function autoBerserk()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_ability_recasts()
+
+	if player ~= nil 
+	   and player.status ~= nil 
+	   and player.status == 1 
+	   and canDoAbilities() == true and
+			doAutoBerserk == true
+			 and table.contains(player.buffs,buff_names["Berserk"])== false and recasts[job_ability_names["Berserk"]] == 0 then
+			windower.send_command('input /ja "berserk" <me>')
+			retVal = true
+	end
+	
+	return retVal
+end
+
+function autoAggressor()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_ability_recasts()
+
+	if player ~= nil 
+	   and player.status ~= nil 
+	   and player.status == 1 
+	   and canDoAbilities() == true and
+			(doAutoAggressor == true and doYoninInninType ~= "yonin")
+			 and table.contains(player.buffs,buff_names["Aggressor"])== false and recasts[job_ability_names["Aggressor"]] == 0 then
+			windower.send_command('input /ja "Aggressor" <me>')
+			retVal = true
+	end
+	
+	return retVal
+end
+
+logic={
+['yes']=true,
+['on']=true,
+['true']=true,
+['no']=false,
+['off']=false,
+['false']=false
+}
+
+windower.register_event('gain buff', function(buffid)
+	--tGainBuff.buff = buffs[buffid].en
+end)
+
+--windower.register_event('lose buff', function(buffid)
+--	if T{446,445,444,66}:contains(buffid) then
+--		reshadows_count = 5
+--	end
+
+--	if reshadows_count
+--end)
+function infinity_loop()
+	local player
+	local temp
+	while true do
+		local ifl = .7
+		player = windower.ffxi.get_player()
+		if player ~= nil and T{player.main_job, player.sub_job}:contains('NIN') == true then
+			tShadows.text=''
+			tInninYonin.text=''
+			tSubtleBlow.text=''
+			tStoreTP.text=''		
+			temp = isbusy['isbusy'] or
+								auto_echo() or
+								auto_shadows() or
+								auto_holy_water() or
+								(player ~= nil and player.main_job == 'NIN' and 
+									(autoMigawari() or
+									 autoYoninInnin() or
+									 auto_weaponskill() or
+									 autoEnmitySpell() or
+									 autoSubtleBlow() or
+									 autoStoreTP())) or
+								 do_auto_abilities() or
+							  (player ~= nil and player.sub_job=='WAR' and
+								  (autoBerserk() or
+								   autoAggressor()
+								  )								 
+								 )
+		end
+		if temp then ifl = 1.3 end
+		coroutine.sleep(ifl)
+	end
+
+end
+
+windower.register_event('addon command', function(...)
+	local args = {...}
+	local cmd = ''
+	
+	if table.length(args) > 0 then
+		cmd = args[1]
+	end
+	
+	if T{"innin", "yonin"}:contains(cmd) then
+		if args[2] and logic[args[2]] then
+			doYoninInninType = cmd
+			windower.send_command('input /ja "' .. doYoninInninType .. '" <me>') 
+			windower.add_to_chat(5, "ninja_helper: " .. doYoninInninType)
+		else
+			doYoninInninType = nil
+			windower.add_to_chat(5, "ninja_helper: Innin and Yonin off.")
+		end
+	end
+end)
+
+--[[
+function autoabilities()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_ability_recasts()
+	local engaged = nil
+	
+	-- Only do auto_abilities when this is the first ws
+	if isbusy == true or canDoAbilities() == false or player.status ~= 1 then
+		return retVal
+	end
+	
+	if player.status == 1 then
+		engaged = true
+	elseif player.status == 0 then
+		engaged = false
+	end
+
+	for abil_name,abil_info in pairs(auto_abilities) do
+		if abil_info.enabled == true and
+			 (abil_info.requiresub == nil or abil_info.requiresub == player.sub_job) and
+		   (abil_info.statusid == nil or table.contains(player.buffs, abil_info.statusid) == false) and
+		   recasts[abil_info.abilityid] == 0 then
+--		  if (abil_name == "Meditate" and player.vitals.tp < meditate_below_tp)
+--		  	 or abil_name ~= "Meditate"
+--		  then
+				windower.send_command('input /ja "' .. abil_name .. '"' .. abil_info.target)
+				retVal = true
+				break
+--			end
+		end
+	end	
+	return retVal
+end
+]]
+
+function do_auto_abilities()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_ability_recasts()
+	local engaged = nil
+	
+	if isbusy == true or canDoAbilities() == false then
+		return retVal
+	end
+	
+	if player.status == 1 then
+		engaged = true
+	elseif player.status == 0 then
+		engaged = false
+	end
+	
+	if player.status ~= 1 then return false end
+	
+	for abil_name,abil_info in pairs(auto_abilities) do
+		if abil_info.enabled == true and
+			 (abil_info.requiresub == nil or abil_info.requiresub == player.sub_job) and
+		   (abil_info.statusid == nil or table.contains(player.buffs, abil_info.statusid) == false) and
+		   recasts[abil_info.abilityid] == 0 then
+			if  (T{25,241}:contains(abil_info.abilityid) and runeCount()>0)
+					or (abil_info.abilityid == 10 and runeCount() < 2)
+					or (T{23,59}:contains(abil_info.abilityid) and runeCount() > 0)
+					or (not T{25,241,10,23,59}:contains(abil_info.abilityid)) 
+			then
+				windower.send_command('input /ja "' .. abil_name .. '"' .. abil_info.target)
+				retVal = true
+				break
+--			elseif T{25,241}:contains(abil_info.abilityid) then
+--				windower.add_to_chat(5, "Rune Count: " .. tostring(runeCount()))
+			end
+		end
+	end	
+	return retVal
+end
+
+function hasRunes()
+	local retVal = false
+	local runeids = {523-529}
+	local player = windower.ffxi.get_player()
+	
+	if player and player.buffs then
+		for runeid=523,529 do
+			if table.contains(buffs, runeid) then
+				retVal = true
+				break
+			end
+		end
+	end
+	
+	return retVal	
+end
+
+function runeCount()
+	local retVal = 0
+	local player = windower.ffxi.get_player()
+	
+	if player and player.buffs then
+		for key, buffid in pairs(player.buffs) do
+			if buffid >=523 and buffid <=529 then
+				retVal = retVal +1
+			end
+		end	
+	end
+		
+	return retVal
+end
+
+function report_tools()
+	local player = windower.ffxi.get_player()
+	
+	if player and player.main_job == 'NIN' and player.status == 1 then
+		texts.visible(tTools,true)
+		tTools.shihei = 0
+		tTools.ino = 0
+		tTools.shika = 0
+		tTools.cho = 0
+	else
+		texts.visible(tTools,false)
+	end
+	return false
+end

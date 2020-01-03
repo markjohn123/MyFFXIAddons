@@ -1,0 +1,17 @@
+sets.exported={
+    main="Izhiikoh",
+    sub="Sandung",
+    range="Raider's Bmrng.",
+    head="Skormoth Mask",
+    body={ name="Taeon Tabard", augments={'Accuracy+18 Attack+18','DEX+1',}},
+    hands={ name="Rawhide Gloves", augments={'HP+19','Accuracy+4','Evasion+9',}},
+    legs={ name="Taeon Tights", augments={'Pet: Attack+5 Pet: Rng.Atk.+5','Pet: Breath+3','STR+5 AGI+5',}},
+    feet={ name="Rawhide Boots", augments={'STR+5','Attack+5','"Store TP"+3',}},
+    neck="Asperity Necklace",
+    waist="Chaac Belt",
+    left_ear="Bladeborn Earring",
+    right_ear="Zennaroi Earring",
+    left_ring="Rajas Ring",
+    right_ring="Apate Ring",
+    back="Ground. Mantle +1",
+}

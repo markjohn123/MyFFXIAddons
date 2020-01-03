@@ -1,0 +1,513 @@
+function get_sets()
+	local baseset = 'baseset'
+	local PDT     = 'PDT'
+	local precast = 'precast'
+	local midcast = 'midcast'
+	local aftercast='aftercast'
+	battle_state = 'STP'	
+	
+	-- Redefine gear to call gs c gear
+	send_command('alias gear gs c gear')
+	send_command('alias naked gs equip naked')
+
+	misc = {}
+
+	misc["ammo_s"] = {
+		["ra"] = "Achiyalabopa Bullet",
+		["ws"] = "Achiyalabopa bullet", 
+		["ws_matt"] ="Orichalc. Bullet", 
+	}
+	
+	sets["ammosra"] = {ammo="Achiyalabopa Bullet"}
+	sets["ammosws"] = {ammo="Achiyalabopa arrow"}
+	sets["ammosws_matt"] = {ammo="Orichalc. Bullet"}
+	sets["ammosws_qdraw"] = {ammo="Omphalos Bullet"}
+
+	--  These are the weapons I use
+	sets["weapons"] = {}
+	
+	sets.weapons["Hanga"]  = {
+		main="Hurlbat",
+		sub="Glinting Shield",
+		range="Hangaku-no-Yumi",
+	}
+	
+	sets.weapons["Falu"]  = {
+		main="Hurlbat",
+		sub="Glinting Shield",
+		range="Falubeza",
+	}
+	
+	sets.weapons["Annihilator"]  = {
+		main="Hurlbat",
+		sub="Glinting Shield",
+		range="Annihilator",
+	}
+	
+	sets.weapons['bow'] = sets.weapons.Hanga
+	sets.weapons['gun'] = sets.weapons.Annihilator
+	
+	sets['Idle'] = {
+    main={ name="atoyac", augments={'System: 1 ID: 912 Val: 8','Crit.hit rate+4',}},
+    head="Umbani Cap",
+    body="Kyujutsugi",
+    hands={ name="Iuitl Wristbands +1", augments={'Phys. dmg. taken -1%','Rng.Atk.+8',}},
+    legs={ name="Iuitl Tights +1", augments={'Phys. dmg. taken -4%','Magic dmg. taken -3%','"Dbl.Atk."+1',}},
+    feet="Fajin Boots",
+    neck="Ocachi Gorget",
+    waist="Goading Belt",
+    left_ear="Volley Earring",
+    right_ear="Brutal Earring",
+    left_ring="Rajas Ring",
+    right_ring="K'ayres Ring",
+    back="Lutian Cape",
+	}
+	
+	sets['Engaged'] = {
+--[[
+    main={ name="atoyac", augments={'System: 1 ID: 912 Val: 8','Crit.hit rate+4',}},
+    head="Umbani Cap",
+    body="Kyujutsugi",
+    hands={ name="Iuitl Wristbands +1", augments={'Phys. dmg. taken -1%','Rng.Atk.+8',}},
+    legs={ name="Iuitl Tights +1", augments={'Phys. dmg. taken -4%','Magic dmg. taken -3%','"Dbl.Atk."+1',}},
+    feet="Qaaxo Leggings",
+    neck="Ocachi Gorget",
+    waist="Goading Belt",
+    left_ear="Volley Earring",
+    right_ear="Brutal Earring",
+    left_ring="Rajas Ring",
+    right_ring="K'ayres Ring",
+    back="Lutian Cape",
+]]
+    head="Umbani Cap",
+    body={ name="Qaaxo Harness", augments={'Attack+15','Evasion+15','"Dbl.Atk."+2',}},
+    hands="Umuthi Gloves",
+    legs={ name="Iuitl Tights +1", augments={'Phys. dmg. taken -4%','Magic dmg. taken -3%','"Dbl.Atk."+1',}},
+    feet="Qaaxo Leggings",
+    neck="Asperity Necklace",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Rajas Ring",
+    right_ring="Epona's Ring",
+    back="Atheling Mantle",
+	}
+	
+	sets['Resting']   = sets.Idle
+
+	local tempIdleset = sets.Idle
+	local tempEngagedset = sets.Engaged
+	
+	
+	sets.Idle['NORMAL'] = sets.Idle
+	sets.Engaged['NORMAL'] = sets.Engaged
+	sets.Resting['NORMAL'] = sets.Resting
+	
+	sets.Idle['STP'] = sets.Idle
+	sets.Engaged['STP'] = {
+    main={ name="atoyac", augments={'System: 1 ID: 912 Val: 8','Crit.hit rate+4',}},
+    head="Umbani Cap",
+    body="Kyujutsugi",
+    hands={ name="Iuitl Wristbands +1", augments={'Phys. dmg. taken -1%','Rng.Atk.+8',}},
+    legs={ name="Iuitl Tights +1", augments={'Phys. dmg. taken -4%','Magic dmg. taken -3%','"Dbl.Atk."+1',}},
+    feet="Qaaxo Leggings",
+    neck="Ocachi Gorget",
+    waist="Goading Belt",
+    left_ear="Volley Earring",
+    right_ear="Brutal Earring",
+    left_ring="Rajas Ring",
+    right_ring="K'ayres Ring",
+    back="Lutian Cape",
+	}
+	
+	sets['Idle']['RACC'] = sets.Idle
+	
+	sets.Engaged['RACC'] = {
+    head="Umbani Cap",
+    body="Kyujutsugi",
+    hands={ name="Buremte Gloves", augments={'Phys. dmg. taken -2%','Magic dmg. taken -2%','System: 1 ID: 362 Val: 3',}},
+    legs="Nahtirah Trousers",
+    feet="Orion Socks +1",
+    neck="Huani Collar",
+    waist="Impulse Belt",
+    left_ear="Volley Earring",
+    right_ear="Clearview Earring",
+    left_ring="Hajduk Ring",
+    right_ring="Longshot Ring",
+    back="Lutian Cape",
+	}
+	
+	sets['agi']= {
+		head="Arcadian beret +1",
+		body="Kyujutsugi",
+		hands="Iuitl wristbands +1",
+		left_ring="Garuda ring",
+		right_ring="Garuda ring",
+		waist="Crudelis belt",
+		legs="Orion braccae +1",
+		feet="Orion socks +1"
+	}
+	
+	sets['dex'] = {
+		head="Umbani Cap",
+		body="Kyujutsugi",
+		hands="Iuitl Wristbands +1",
+		left_ring="rajas ring",
+		right_ring="Thundersoul ring",
+		feet="Orion Socks +1"
+	}
+	
+	sets['mnd'] = {
+	}
+	
+	sets['vit'] = {
+	}
+	
+	sets['str'] = {
+	}
+	
+	sets['da'] = {
+	}
+	
+	sets['att'] = {
+	}
+	
+	sets['mab'] = { }
+	
+	sets['WS'] = {}
+	
+	sets['traits'] = {}
+	sets.traits['rapid shot'] = {
+		head="Orion beret +1",
+		body="Arcadian jerkin +1",
+		feet="Arcadian socks"
+	}
+	
+	sets.traits['snapshot'] = {
+		hands="Iuitl wristbands +1",
+		waist="Impulse belt",
+		legs="Nahtirah trousers",
+		feet="Wurrukatte boots"
+	}
+	
+	sets.traits['recycle'] = {
+		head="Arcadian beret +1",
+		hands="Iuitl wristbands +1",
+		back="Libeccio mantle"
+	}
+	
+	sets['ra'] = {
+		precast=set_combine(sets.traits['snapshot'], sets.traits['rapid shot']),
+		baseset=sets.traits.recycle,
+		neck="Ocachi gorget",
+		left_ear="Clearview earring",
+		right_ear="Volley earring",
+		body="Kyujutsugi",
+		left_ring="Rajas ring",
+		right_ring="K'ayres ring",
+		waist="Goading belt",
+		legs="Iuitl tights +1",
+		feet="Qaaxo leggings"
+	}
+	
+	sets.WS['Hot Shot'] = {
+		basesets={sets.agi, sets.mab},
+		left_ear="Moonshade earring"
+
+	}
+	
+	sets.WS['Split Shot'] = {
+		baseset=sets.agi,
+		left_ear="Moonshade earring"
+
+	}
+	
+	sets.WS['Sniper Shot'] = {
+		baseset=sets.agi,
+		left_ear="Moonshade earring"
+
+	}
+
+	
+	sets.WS['Slug Shot'] = {
+		baseset=sets.agi,
+		head="Umbani cap",
+		neck="Light gorget",
+		left_ear="Moonshade earring",
+		back="Lutian cape",
+		waist="Light belt"
+	}
+
+	
+	sets.WS['Blast Shot'] = {
+		baseset=sets.agi
+	}
+
+	
+	sets.WS['Heavy Shot'] = {
+		baseset=sets.agi
+	}
+
+	
+	sets.WS['Detonator'] = {
+		baseset=sets.agi,
+		left_ear="Moonshade earring"
+	}
+
+	
+	sets.WS['Numbing Shot'] = {
+		basesets={sets.mnd,sets.str}
+	}
+	
+	sets.WS['Coronach'] = {
+    head={ name="Arcadian Beret +1", augments={'Enhances "Recycle" effect',}},
+    body={ name="Arc. Jerkin +1", augments={'Enhances "Snapshot" effect',}},
+    hands="Orion Bracers +1",
+    legs="Nahtirah Trousers",
+    feet="Orion Socks +1",
+    neck="Breeze Gorget",
+    waist="Breeze Belt",
+    left_ear="Volley Earring",
+    right_ear="Brutal Earring",
+    left_ring="Garuda Ring",
+    right_ring="Garuda Ring",
+    back="Lutian Cape",
+	}
+	
+	sets.WS['Trueflight'] = {
+		sets.agi,
+		left_ear="Moonshade earring"
+	}
+	
+	sets.WS['Flaming Arrow'] = {basesets={sets.agi,sets.mab},left_ear="Moonshade earring"}
+	
+	sets.WS['Piercing Arrow'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS['Dulling Arrow'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS['Sidewinder'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS['Blast Arrow'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS['Arching Arrow'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS['Empyreal Arrow'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS['Refulgent Arrow'] = {basesets={sets.str,sets.agi},left_ear="Moonshade earring"}
+	
+	sets.WS["Jishnu's Radiance"] = {
+		baseset=sets.dex,
+		neck="Light Gorget",
+		back="Rancorous mantle",
+		waist="Light Belt",
+		feet="Nahtirah Trousers"
+	}
+	
+	sets['JA'] = {}
+	
+	sets.JA['Eagle Eye Shot'] = {
+		legs="Arcadian braccae"
+	}
+	
+	sets.JA['Scavenge'] = {
+		feet="Orion socks +1"
+	}
+	
+	sets.JA['Shadowbind'] = {
+		hands="Orion bracers +1"
+	}
+	
+	sets.JA['Camouflage'] = {
+		body="Orion jerkin +1",
+	}
+	
+	sets.JA['Sharpshot'] = {
+		legs="Orion braccae +1"
+	}
+	
+	sets.JA['Barrage'] = {
+		hands="Orion bracers +1"
+	}
+	
+	sets.JA['Unlimited Shot'] = {}
+	
+	sets.JA['Velocity Shot'] = {}
+	
+	sets.JA['Double Shot'] = {}
+	
+	sets.JA['Bounty Shot'] = {
+		waist="Chaac belt"
+	}
+	
+	sets.JA['Decoy Shot'] = {}
+	
+	sets.JA['Overkill'] = {}
+	
+	sets.JA['Flashy Shot'] = {
+		hands="Arcadian bracers"
+	}
+	
+	sets.JA['Stealth Shot'] = {
+		feet="Arcadian socks"
+	}
+	
+	-- Warrior sub
+	sets.JA['Berserk'] = {
+	
+	}
+
+	sets.JA['Warcry'] = {
+	
+	}
+
+	sets.JA['Defender'] = {
+	
+	}
+
+	sets.JA['Aggressor'] = {
+	
+	}
+
+	sets.JA['Provoke'] = {
+	
+	}
+
+	-- Dancer sub
+	sets.JA['Drain Samba'] = {
+	
+	}
+	
+	sets.JA['Drain Samba II'] = {
+	
+	}
+	
+	sets.JA['Aspir Samba'] = {
+	
+	}
+	
+	sets.JA['Haste Samba'] = {
+	
+	}
+	
+	sets['chr'] = {
+	
+	}
+	
+	sets.JA['Curing Waltz'] = {
+		baseset=sets.chr
+	}
+	
+	sets.JA['Curing Waltz II'] = sets.JA['Curing Waltz']
+	
+	sets.JA['Curing Waltz III'] = sets.JA['Curing Waltz']
+	
+	sets.JA['Healing Waltz'] = sets.JA['Curing Waltz']
+	
+	sets.JA['Divine Waltz'] = sets.JA['Curing Waltz']
+	
+	sets.JA['Spectral Jig'] = {
+	
+	}
+	
+	sets.JA['Quickstep'] = {
+	
+	}
+	
+	sets.JA['Box Step'] = {
+	
+	}
+	
+	sets.JA['Stutter Step'] = {
+	
+	}
+	
+	sets.JA['Animated Flourish'] = {
+	
+	}
+	
+	sets.JA['Desperate Flourish'] = {
+	
+	}
+	
+	sets.JA['Violent Flourish'] = {
+	
+	}
+	
+	sets.JA['Reverse Flourish'] = {
+	
+	}
+	
+	-- Rune Fencer Sub
+	sets['rune enhancement'] = {}
+	
+	sets.JA['Ignis'] = sets['rune enhancement']
+	sets.JA['Gelus'] = sets['rune enhancement']
+	sets.JA['Flabra'] = sets['rune enhancement']
+	sets.JA['Tellus'] = sets['rune enhancement']
+	sets.JA['Sulpor'] = sets['rune enhancement']
+	sets.JA['Unda'] = sets['rune enhancement']
+	sets.JA['Lux'] = sets['rune enhancement']
+	sets.JA['Tenebrae'] = sets['rune enhancement']
+	
+	sets.JA['Swordplay'] = {}
+	
+	sets['ward'] = {}
+	
+	sets.JA['Vallation'] = sets.ward
+	sets.JA['Pflug'] = sets.ward
+	
+	sets['effusion'] = {
+		baseset=sets.mab
+	}
+	
+	sets.JA['Swipe'] = sets.effusion
+	sets.JA['Lunge'] = sets.effusion
+	
+	-- Ninja subjob
+	
+	-- sam subjob
+	sets.JA['Meditate'] = {}
+	
+	sets.JA['Sekkanoki'] = {}
+	
+	sets.MA = {}
+	
+	add_trusts()
+	
+	sets.MA['fast cast'] = {
+	}
+	
+	sets.MA['Katon: Ichi'] = sets.MA['fast cast']
+	sets.MA['Katon: Ni'] = sets.MA['fast cast']
+	sets.MA['Hyoton: Ichi'] = sets.MA['fast cast']
+	sets.MA['Hyoton: Ni'] = sets.MA['fast cast']
+	sets.MA['Huton: Ichi'] = sets.MA['fast cast']
+	sets.MA['Huton Ni'] = sets.MA['fast cast']
+	sets.MA['Doton: Ichi'] = sets.MA['fast cast']
+	sets.MA['Doton:: Ni'] = sets.MA['fast cast']
+	sets.MA['Raiton: Ichi'] = sets.MA['fast cast']
+	sets.MA['Raiton: Ni'] = sets.MA['fast cast']
+	sets.MA['Suiton: Ichi'] = sets.MA['fast cast']
+	sets.MA['Suiton: Ni'] = sets.MA['fast cast']
+	sets.MA['Jubaku: Ichi'] = sets.MA['fast cast']
+	sets.MA['Hojo: Ichi'] = sets.MA['fast cast']
+	sets.MA['Hojo: Ni'] = sets.MA['fast cast']
+	sets.MA['Kurayami: Ichi'] = sets.MA['fast cast']
+	sets.MA['Kurayami Ni'] = sets.MA['fast cast']
+	sets.MA['Dokumori: Ichi'] = sets.MA['fast cast']
+	sets.MA['Tonko: Ichi'] = sets.MA['fast cast']
+	sets.MA['Tonko: Ni'] = sets.MA['fast cast']
+	sets.MA['Monomi: Ichi'] = sets.MA['fast cast']
+	
+	sets.MA['Utsusemi: Ichi'] = {
+		baseset=sets.MA['fast cast'],
+		neck="Magoraga beads"
+	}
+	
+	sets.MA['Utsusemi: Ni'] = sets.MA['Utsusemi: Ichi']
+
+	-- Equip this gear when certain buffs are actIVe
+	
+	sets['buff active'] = {}
+	
+end

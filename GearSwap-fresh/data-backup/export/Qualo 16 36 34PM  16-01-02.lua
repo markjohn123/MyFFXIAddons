@@ -1,0 +1,17 @@
+sets.exported={
+    main="Izizoeksi",
+    sub="Arktoi",
+    ammo="Paeapua",
+    head="Skormoth Mask",
+    body={ name="Despair Mail", augments={'Accuracy+10','Pet: VIT+7','Pet: Damage taken -3%',}},
+    hands={ name="Xaddi Gauntlets", augments={'Attack+7','Accuracy+6',}},
+    legs={ name="Taeon Tights", augments={'Pet: Attack+5 Pet: Rng.Atk.+5','Pet: Breath+3','STR+5 AGI+5',}},
+    feet={ name="Taeon Boots", augments={'Pet: Attack+10 Pet: Rng.Atk.+10','Pet: "Subtle Blow"+4','STR+1 AGI+1',}},
+    neck="Agitator's Collar",
+    waist="Hurch'lan Sash",
+    left_ear="Zennaroi Earring",
+    right_ear="Handler's Earring",
+    left_ring="Rajas Ring",
+    right_ring="K'ayres Ring",
+    back={ name="Pastoralist's Mantle", augments={'STR+2 DEX+2','Accuracy+1','Pet: Damage taken -3%',}},
+}

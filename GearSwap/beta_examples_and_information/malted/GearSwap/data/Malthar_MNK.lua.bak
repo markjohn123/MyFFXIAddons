@@ -1,0 +1,151 @@
+function get_sets()                
+    sets.precast = {}
+    sets.precast.Boost = {hands="Anchorite's Gloves"}
+    sets.precast.Chakra = {	ammo="Bibiki Seashell", 
+    												head="Felistris Mask",
+    												body="Anchorite's Cyclas",    												
+    												hands="Anchorite's Gloves",
+    												ring1="Terrasoul Ring",
+    												legs="Nahtirah Trousers",
+    												feet="Otronif Boots"}
+    												
+    sets.precast.Counterstance = {feet="Melee Gaiters +2"}
+    
+    sets.precast.Dodge = {feet="Anchorite's Gaiters"}
+    
+    sets.precast.Mantra = {feet="Melee Gaiters +2"}
+       
+    sets.precast['Victory Smite'] = {
+   													main="Spharai",
+   													ammo="Honed tathlum",
+   													head="Felistris Mask",
+   													neck="Light Gorget",
+        										ear1="Brutal Earring",
+        										ear2="Moonshade Earring",
+        										body="Manibozho Jerkin",
+        										hands="Manibozho Gloves",
+        										ring1="Pyrosoul Ring",
+        										ring2="Epona's Ring",
+        										back="Rancorous Mantle",
+        										waist="Windbuffet belt +1",
+        										legs="Quiahuiz leggings",
+        										feet="Manibozho Boots"}
+        
+    sets.precast.WS = {
+    												main="Spharai",
+   													ammo="Honed tathlum",
+   													head="Felistris Mask",
+   													neck="Light Gorget",
+        										ear1="Brutal Earring",
+        										ear2="Moonshade Earring",
+        										body="Manibozho Jerkin",
+        										hands="Manibozho Gloves",
+        										ring1="Pyrosoul Ring",
+        										ring2="Epona's Ring",
+        										back="Rancorous Mantle",
+        										waist="Windbuffet belt +1",
+        										legs="Quiahuiz leggings",
+        										feet="Manibozho Boots"}
+    
+    sets.TP = {}
+    
+    sets.TP.DD = {
+    												main="Spharai",
+    												ammo="Honed tathlum",
+    												head="Felistris Mask",
+    												neck="Asperity Necklace",
+        										ear1="Steelflash Earring",
+        										ear2="Bladeborn Earring",
+        										body="Thaumas Coat",
+        										hands="Otronif Gloves",
+        										ring1="Rajas Ring",
+        										ring2="Epona's Ring",
+        										back="Misuuchi kappa",
+        										waist="Windbuffet belt +1",
+        										legs="Anchorite's hose",
+        										feet="Anchorite's Gaiters"}
+	
+    
+    sets.DT = {
+    												ammo="Honed tathlum",
+    												head="Otronif mask",
+    												neck="Twilight Torque",
+    												ear1="Steelflash Earring",
+    												ear2="Bladeborn Earring",
+    												body="Otronif harness",
+        										hands="Otronif Gloves",
+        										ring1="Dark Ring",
+        										ring2="Dark Ring",
+        										back="Repulse Mantle",
+        										waist="Black Belt",
+        										legs="Anchorite's Hose",
+        										feet="Otronif boots"}
+    
+    sets.aftercast = {}
+    sets.aftercast.TP = sets.TP.DD
+    
+    sets.aftercast.Idle = {
+    												main="Spharai",
+    												ammo="Honed tathlum",
+    												head="Otronif mask",
+    												neck="Twilight Torque",
+        										ear1="Steelflash Earring",
+        										ear2="Bladeborn Earring",
+        										body="Melee cyclas +2",
+        										hands="Otronif Gloves",
+        										ring1="Dark Ring",
+        										ring2="Dark Ring",
+        										back="Repulse Mantle",
+        										waist="Black Belt",
+        										legs="Quiahuiz leggings",
+        										feet="Hermes' Sandals"}
+        										
+    send_command('input /macro book 2;wait .1;input /macro set 1')
+end
+
+function precast(spell)
+    if player.equipment.head == 'Reraise Hairpin' then disable('head')
+    else enable('head') end
+    if player.equipment.left_ear == 'Reraise Earring' then disable('ear1')
+    else enable('ear1') end
+    if sets.precast[spell.english] then
+        equip(sets.precast[spell.english])
+    elseif spell.type=="WeaponSkill" then
+        equip(sets.precast.WS)
+    elseif string.find(spell.english,'Waltz') then
+        equip(sets.precast.Waltz)
+    end
+end
+
+function midcast(spell)
+end
+
+function aftercast(spell)
+    if player.status =='Engaged' then
+        equip(sets.aftercast.TP)
+    else
+        equip(sets.aftercast.Idle)
+    end
+end
+
+function status_change(new,old)
+    if T{'Idle','Resting'}:contains(new) then
+        equip(sets.aftercast.Idle)
+    elseif new == 'Engaged' then
+        equip(sets.aftercast.TP)
+    end
+end
+
+function self_command(command)
+    if command == 'toggle TP set' then
+        if sets.aftercast.TP == sets.TP.DD then
+            sets.aftercast.TP = sets.TP.Solo
+            send_command('@input /echo SOLO SET')
+        elseif sets.aftercast.TP == sets.TP.Solo then
+            sets.aftercast.TP = sets.TP.DD
+            send_command('@input /echo DD SET')
+        end
+    elseif command == 'DT' then
+        equip(sets.DT)
+    end
+end

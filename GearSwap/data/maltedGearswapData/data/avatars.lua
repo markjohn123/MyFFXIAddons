@@ -1,0 +1,23 @@
+-- define an array that has the avatars and their elements
+avatars = {
+	["Fire Spirit"] = "fire",
+	["Ice Spirit"] = "ice",
+	["Air Spirit"] = "air",
+	["Earth Spirit"] = "earth",
+	["Water Spirit"] = "water",
+	["Light Spirit"] = "light",
+	["Dark Spirit"] = "dark",
+	["Carbuncle"] = "light",
+	["Fenrir"] = "dark",
+	["Ifrit"] = "fire",
+	["Titan"] = "earth",
+	["Leviathan"] = "water",
+	["Garuda"] = "wind",
+	["Shiva"] = "ice",
+	["Ramuh"] = "thunder",
+	["Diabolos"] = "dark",
+	["Odin"] = "dark",
+	["Alexander"] = "light",
+	["Cait Sith"] = "light",
+	["Atomos"] = "dark",
+}

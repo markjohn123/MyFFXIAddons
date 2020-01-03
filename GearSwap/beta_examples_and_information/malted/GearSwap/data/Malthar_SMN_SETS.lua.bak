@@ -1,0 +1,251 @@
+function get_sets()
+	local baseset = 'baseset'
+	local PDT     = 'PDT'
+	local precast = 'precast'
+	local midcast = 'midcast'
+	local aftercast='aftercast'
+	
+	-- Redefine gear to call gs c gear
+	send_command('alias gear gs c gear')
+	send_command('alias naked gs equip naked')
+
+	--  These are the weapons I use
+	sets["weapons"] = {}
+	
+	sets.weapons[""]  = {
+	}
+		
+	sets['Idle'] = {
+	}
+	
+	sets['Engaged'] = {
+	}
+	
+	sets['Resting']   = sets.Idle
+
+	local tempIdleset = sets.Idle
+	local tempEngagedset = sets.Engaged
+	
+	
+	sets.Idle['NORMAL'] = sets.Idle
+	sets.Engaged['NORMAL'] = sets.Engaged
+	sets.Resting['NORMAL'] = sets.Resting
+
+	sets.Idle['PET'] = {
+	
+	}
+	
+	sets.Engaged['PET'] = {
+	
+	}
+	
+	-- PDT and MDT gear
+	sets.Idle['PDT'] = {
+		baseset=tempIdleset,
+	}
+	
+	sets.Engaged['PDT'] = {
+		baseset=tempEngagedset,
+	}
+
+	sets.Idle['HPDT'] = {
+		baseset=sets.Idle.PDT,
+		PDT={
+		
+		}
+		
+	}
+	
+	sets.Engaged['HPDT'] = {
+		baseset=sets.Engaged.PDT,
+	}
+	
+	sets.Idle['MDT'] = {
+		baseset=tempIdleset,
+	}
+	
+	sets.Engaged['MDT'] = {
+		baseset=tempEngagedset,
+	}
+	
+	sets.Idle['HMDT'] = {
+		baseset=sets.Idle.MDT,
+		PDT={
+		
+		}
+		
+		
+	}
+	
+	sets.Engaged['HMDT'] = {
+		baseset=sets.Engaged.MDT,
+	}
+	
+
+	sets['fast cast'] = {
+		precast={
+		}
+	}
+
+	sets['blue magic precast'] = {
+		basesets={sets['fast cast'], {precast={body="Mavi mintan +2", hands="Mavi bazubands +2"}}}
+
+
+	sets['da'] = {
+    body={ name="Qaaxo Harness", augments={'Attack+15','Evasion+15','"Dbl.Atk."+2',}},
+    legs={ name="Iuitl Tights +1", augments={'Phys. dmg. taken -4%','Magic dmg. taken -3%','"Dbl.Atk."+1',}},
+    feet="Battlecast Gaiters",
+    neck="Asperity Necklace",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    right_ring="Epona's Ring",
+    back="Atheling Mantle",
+	}
+	
+	sets['str'] = {
+    head="Sukeroku Hachi.",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands={ name="Iuitl Wristbands +1", augments={'Phys. dmg. taken -1%','Rng.Atk.+8',}},
+    legs="Nahtirah Trousers",
+    feet="Battlecast Gaiters",
+    waist="Wanion Belt",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back="Buquwik Cape",
+	}
+	
+	sets['dex'] = {
+    ammo="Jukukik Feather",
+    head="Umbani Cap",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands="Umuthi Gloves",
+    feet="Battlecast Gaiters",
+    waist="Wanion Belt",
+    left_ring="Thundersoul Ring",
+    back="Kayapa Cape",
+	}
+	
+	sets['vit'] = {
+    ammo="Bibiki Seashell",
+    head="Whirlpool Mask",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands="Umuthi Gloves",
+    legs="Nahtirah Trousers",
+    feet="Battlecast Gaiters",
+    neck="Shield Collar",
+    left_ring="Terrasoul Ring",
+	}
+	
+
+	sets['agi'] = {
+    head="Umbani Cap",
+    neck="Houyi's gorget",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands={ name="Iuitl Wristbands +1", augments={'Phys. dmg. taken -1%','Rng.Atk.+8',}},
+    legs="Nahtirah Trousers",
+    feet="Battlecast Gaiters",
+    waist="Chaac Belt",
+    left_ring="Garuda Ring",
+    right_ring="Garuda Ring",
+	}
+	
+
+	sets['int'] = {
+    head="Sukeroku Hachi.",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands="Umuthi Gloves",
+    legs={ name="Hagondes Pants +1", augments={'Phys. dmg. taken -3%',}},
+    feet="Manabyss Pigaches",
+    waist="Wanion Belt",
+    back="Cornflower Cape",
+	}
+	
+
+	sets['mnd'] = {
+    head="Sukeroku Hachi.",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands="Umuthi Gloves",
+    legs={ name="Hagondes Pants +1", augments={'Phys. dmg. taken -3%',}},
+    feet="Manabyss Pigaches",
+    neck="Promise Badge",
+    left_ring="Aquasoul Ring",
+    right_ring="Aquasoul Ring",
+    back="Tuilha Cape",
+	}
+	
+
+	sets['chr'] = {
+    head="Sukeroku Hachi.",
+    body={ name="Luhlaza Jubbah +1", augments={'Enhances "Enchainment" effect',}},
+    hands="Umuthi Gloves",
+    legs={ name="Hagondes Pants +1", augments={'Phys. dmg. taken -3%',}},
+    feet="Manabyss Pigaches",
+    neck="Phalaina Locket",
+    waist="Aristo Belt",
+    back="Swith Cape",
+	}
+	
+	
+	sets['mab'] = {
+    ammo="Dosis Tathlum",
+    head="Assim. Keffiyeh",
+    body={ name="Hagondes Coat", augments={'Phys. dmg. taken -3%','"Fast Cast"+4',}},
+    hands={ name="Buremte Gloves", augments={'Phys. dmg. taken -2%','Magic dmg. taken -2%','System: 1 ID: 362 Val: 3',}},
+    legs={ name="Hagondes Pants +1", augments={'Phys. dmg. taken -3%',}},
+    feet="Manabyss Pigaches",
+    neck="Eddy Necklace",
+    left_ear="Friomisi Earring",
+    right_ear="Crematio Earring",
+    left_ring="Acumen Ring",
+    right_ring={ name="Demon's Ring", augments={'"Mag.Atk.Bns."+3','Light resistance-6 Dark resistance+6','"Resist Curse"+2',}},
+    back="Cornflower Cape",
+	}
+
+	sets['macc'] = {
+    head="Assim. Keffiyeh",
+    hands="Ayao's Gages",
+    legs={ name="Iuitl Tights +1", augments={'Phys. dmg. taken -4%','Magic dmg. taken -3%','"Dbl.Atk."+1',}},
+    neck="Eddy Necklace",
+    left_ear="Lifestorm Earring",
+    right_ear="Psystorm Earring",
+    left_ring="Perception Ring",
+    right_ring="Strendu Ring",
+    back="Cornflower Cape",
+	}
+	
+
+	sets['breath damage'] = {
+		ammo="Mavi tathlum",
+		head="Luhlaza Keffiyeh +1"
+	}
+	
+	sets['healing'] = {
+		baseset=sets.mnd,
+    hands="Serpentes Cuffs",
+    feet="Serpentes Sabots",
+    neck="Phalaina Locket",
+    left_ring="Sirona's Ring",
+	}
+	
+	sets['healing me'] = {
+		baseset=sets.healing,
+		right_ring="Kunaji Ring"
+	}
+	
+	sets['WS'] = {}
+	
+	sets.WS[""] = {
+	}
+
+	
+	sets['JA'] = {}
+
+	-- Magic
+	sets['MA'] = {}
+
+	-- Equip this gear when certain buffs are active
+	
+	sets['buff active'] = {}
+	
+end

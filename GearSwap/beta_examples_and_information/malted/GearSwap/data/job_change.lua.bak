@@ -1,0 +1,49 @@
+--[[
+//  1 Warrior
+//  2 Monk
+//  3 White Mage
+//  4 Black Make
+//  5 Red Mage
+//  6 Thief
+//  7 Paladin
+//  8 Dark Knight
+//  9 Beastmaster
+// 10 Bard
+// 11 Ranger
+// 12 Summoner
+// 13 Ninja
+// 14 Dragoon
+// 15 Samurai
+// 16 Blue Mage
+// 17 Corsair
+// 18 Puppetmaster
+// 19 Dancer
+// 20 Scholar
+// 21 Geomancer
+// 22 Rune Fencer
+]]
+
+local jobs = {
+	["Warrior"]=1,   
+	["Monk"]=2,        
+	["White Mage"]=3,  
+	["Black Make"]=4,  
+	["Red Mage"]=5,    
+	["Thief"]=6,       
+	["Paladin"]=7,     
+	["Dark Knight"]=8, 
+	["Beastmaster"]=9, 
+	["Bard"]=10,        
+	["Ranger"]=11,      
+	["Summoner"]=12,    
+	["Ninja"]=13,       
+	["Dragoon"]=14,     
+	["Samurai"]=15,     
+	["Blue Mage"]=16,   
+	["Corsair"]=17,     
+	["Puppetmaster"]=18,
+	["Dancer"]=19,      
+	["Scholar"]=20,     
+	["Geomancer"]=20,   
+	["Rune Fencer"]=20, 
+}

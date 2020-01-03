@@ -1,0 +1,71 @@
+--[[
+	Automatically perform strategic operations based on target mob
+]]
+
+if strategy == nil then
+	strategy = {}
+end
+
+strategy['paladin'] = {
+	['mele_state']='idleengaged',
+	['shield'] = 'priwen'
+}
+
+function strategy.do_auto_strategy()
+	local player = windower.ffxi.get_player()
+	local target_mob
+	local ability_recasts
+	
+	if do_auto_strategy == true and player ~= nil and player.status == 1 then
+		target_mob = windower.ffxi.get_mob_by_target('t')
+
+		if target_mob ~= nil then
+			ability_recasts = windower.ffxi.get_ability_recasts()
+			
+			-- Arc Angel Hm.
+			if string.lower(target_mob.name) == '[arc angel hm]' then
+				-- Set state to pdt if already not pdt
+				if strategy.paladin.mele_state ~= 'pdt' then
+					strategy.paladin.mele_state = 'pdt'
+					windower.send_command('sc group pdt ; gear')
+				end
+				
+				-- Use sentinel normally
+				if target_mob.vitals.hpp > 50 then
+					auto_abilities.sentinel.enabled = false
+				end
+				
+				if target_mob.vitals.hpp <= 10 then
+					if strategy.paladin.shield ~= 'aegis' then
+						strategy.paladin.shield = 'aegis'
+						windower.send_command('sc var set weapon aegis ; gear')
+					end
+				else
+					if strategy.paladin.shield ~= 'priwen' then
+						strategy.paladin.shield = 'priwen'
+						windower.send_command('sc var set weapon priwen ; gear')
+					end
+				end
+				
+				-- Under 5% use sentinel
+				if 	target_mob.vitals.hpp <= 5 then
+					auto_abilities.sentinel.enabled = true
+					if table.contains(player.vitals, 62) == false and ability_recasts[75] == 0 then
+						windower.send_command('input /ja sentinel <me>')
+					end
+				else
+					auto_abilities.sentinel.enabled = false
+				end
+				
+				
+			-- Other strategies
+			end
+		else
+			-- Reset stuff to default
+			strategy.paladin.mele_state = 'idleengaged'
+			windower.send_command('sc group idleengaged ; gear')
+			auto_abilities.sentinel.enabled = true
+		end
+	end
+end
+

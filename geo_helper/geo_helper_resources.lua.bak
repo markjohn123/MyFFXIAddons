@@ -1,0 +1,86 @@
+geo_spells = {
+	["on_npc"] = {
+		'Geo-Poison',
+		'Geo-Slow',
+		'Geo-Torpor',
+		'Geo-Slip',
+		'Geo-Languor',
+		'Geo-Paralysis',
+		'Geo-Vex',
+		'Geo-Frailty',
+		'Geo-Wilt',
+		'Geo-Malaise',
+		'Geo-Fade'
+	},
+	["on_pc"] = {
+		'Geo-Voidance',
+		'Geo-Prcision',
+		'Geo-Regen',
+		'Geo-Attunement',
+		'Geo-Focus',
+		'Geo-Barrier',
+		'Geo-Refresh',
+		'Geo-CHR',
+		'Geo-MND',
+		'Geo-Fury',
+		'Geo-INT',
+		'Geo-AGI',
+		'Geo-Fend',
+		'Geo-VIT',
+		'Geo-DEX',
+		'Geo-Acumen',
+		'Geo-STR',
+		'Geo-Haste'
+	}
+}
+
+function isOffensiveGeo(spell)
+	local retVal = false
+		if table.contains(geo_spells.on_npc, spell) then
+			retVal = true
+		end
+	return retVal
+end
+
+function isDefensiveGeo(spell)
+	local retVal = false
+	
+	if table.contains(geo_spells.on_pc) then
+		retVal = true
+	end
+	
+	return retVal
+end
+
+local target_types = {
+	['offensive'] = {
+		['<t>']  = 't',
+		['bt']   = 'bt',
+	},
+	['deffensive'] = {
+		['<me>'] = 'me',
+		['<p0>'] = 'p0',
+		['<p1>'] = 'p1',
+		['<p2>'] = 'p2',
+		['<p3>'] = 'p3',
+		['<p4>'] = 'p4',
+		['<p5>'] = 'p5',
+	}
+}
+
+function isOffensiveTarget()
+	local retVal = false
+	if target_types.offensive[geo_target] then
+		retVal = true
+	end
+	return retVal
+end
+
+function isDeffensiveTarget()
+	local retVal = false
+	if target_types.offensive[geo_target] then
+		retVal = true
+	end
+	return retVal
+end
+

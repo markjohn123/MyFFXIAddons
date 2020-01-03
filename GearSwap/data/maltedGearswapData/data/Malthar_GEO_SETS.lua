@@ -1,0 +1,1011 @@
+function get_sets()
+	local baseset = 'baseset'
+	local pdt     = 'PDT'
+	local precast = 'precast'
+	local midcast = 'midcast'
+	local aftercast='aftercast'
+
+	-- Redefine gear to call gs c gear
+	send_command('alias gear gs c gear')
+	send_command('alias naked gs equip naked')
+
+	-- Use obi, belt, and gorget for weaponskills
+	sets.elemental_obi 			= { waist="Hachirin-no-obi" }
+	sets.weaponskill_belt 	= { waist="Fotia Belt" }
+	sets.weaponskill_gorget = { neck="Fotia Gorget" }
+	
+	--  These are the weapons I use
+	sets["weapons"] = {}
+	
+	sets.weapons["staff"]  = {
+--		main="Terra's Staff", 
+--		sub="Mephitis Grip", 
+--		range='Dunna'
+	}
+	
+	sets.weapons["club"] = {
+    main="Bolelabunga",
+    sub={ name="Genbu's Shield", augments={'"Cure" potency +2%','"Cure" spellcasting time -2%',}},
+    range="Dunna",
+	}
+	
+	sets['Idle'] = {
+    head="Azimuth Hood +1",
+    body="Jhakri robe +1",
+    hands="Geo. Mitaines +1",
+    legs="Assiduity Pants +1",
+    feet="geomancy Sandals +1",
+    neck="Twilight Torque",
+    waist="Isa Belt",
+    left_ear="Handler's Earring +1",
+    right_ear="Handler's Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Umbra Cape",
+	}
+
+	sets['Engaged'] = {
+    head="Azimuth Hood +1",
+    body="Jhakri robe +1",
+    hands="Geo. Mitaines +1",
+    legs="Assiduity Pants +1",
+    feet="geomancy Sandals +1",
+    neck="Twilight Torque",
+    waist="Isa Belt",
+    left_ear="Handler's Earring +1",
+    right_ear="Handler's Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Umbra Cape",
+	}
+	
+	sets['Resting']   = {
+		baseset=sets['Idle'],
+		ammo="Clarus Stone",
+		main="Chatoyant Staff",
+		hands="Nares Cuffs"
+	}
+
+	local tempIdleset = sets.Idle
+	local tempEngagedset = sets.Engaged
+	
+	
+	sets.Idle['NORMAL'] = sets.Idle
+	sets.Engaged['NORMAL'] = sets.Engaged
+	sets.Resting['NORMAL'] = sets['Resting'] 
+	
+	-- PDT and MDT gear
+	sets.Idle['PDT'] = {
+    head={ name="Merlinic Hood", augments={'"Mag.Atk.Bns."+22','Magic Damage +14','INT+7',}},
+    body="Onca Suit",
+    neck="Twilight Torque",
+    waist="Isa Belt",
+    left_ear="Handler's Earring +1",
+    right_ear="Handler's Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Umbra Cape",
+	}
+	sets.Engaged['PDT'] = {
+    head={ name="Merlinic Hood", augments={'"Mag.Atk.Bns."+22','Magic Damage +14','INT+7',}},
+    body="Onca Suit",
+    neck="Twilight Torque",
+    waist="Isa Belt",
+    left_ear="Handler's Earring +1",
+    right_ear="Handler's Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Umbra Cape",
+	}
+
+	sets.Idle['HPDT'] = sets.Idle.PDT
+	
+	sets.Engaged['HPDT'] = sets.Idle.PDT
+	
+	sets.Idle['MDT'] = sets.Idle.PDT
+	
+	sets.Engaged['MDT'] = sets.Idle.PDT
+	
+	sets.Idle['HMDT'] = sets.Idle.PDT
+	
+	sets.Engaged['HMDT'] = sets.Idle.PDT
+	
+	sets.Idle['PETPDT'] = sets.Idle
+	sets.Engaged['PETPDT'] = sets.Engaged
+	
+	sets.Idle['REFRESH'] = {
+    head="Azimuth Hood +1",
+    body="Jhakri Robe +1",
+    hands={ name="Bagua Mitaines", augments={'Enhances "Curative Recantation" effect',}},
+    legs="Assiduity Pants +1",
+    feet="Serpentes Sabots",
+    neck="Twilight Torque",
+    waist="Fucho-no-Obi",
+    left_ear="Handler's Earring +1",
+    right_ear="Handler's Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Umbra Cape",
+	}
+	
+	sets.Engaged['REFRESH'] = {
+    range="Dunna",
+    head="Azimuth Hood +1",
+    body="Jhakri Robe +1",
+    hands={ name="Bagua Mitaines", augments={'Enhances "Curative Recantation" effect',}},
+    legs="Assiduity Pants +1",
+    feet="Serpentes Sabots",
+    neck="Twilight Torque",
+    waist="Fucho-no-Obi",
+    left_ear="Handler's Earring +1",
+    right_ear="Handler's Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Umbra Cape",
+	}
+	
+	sets['macc'] = {
+    main={ name="Serenity", augments={'MP+25','"Cure" spellcasting time -5%',}},
+    sub="Mephitis Grip",
+    ammo="Hydrocera",
+    head="Jhakri Coronal +1", 
+    body={ name="Helios Jacket", augments={'"Mag.Atk.Bns."+22','Magic crit. hit rate +7','Magic burst dmg.+7%',}},
+    hands="Lurid Mitts",
+    --hands="Azimuth gloves",
+    legs={ name="Helios Spats", augments={'Mag. Acc.+24',}},
+    feet={ name="Helios Boots", augments={'"Mag.Atk.Bns."+11','Magic crit. hit rate +7','Magic burst dmg.+10%',}},
+    neck="Sanctity Necklace",
+    waist="Luminary Sash",
+    left_ear="Lifestorm Earring",
+    right_ear="Psystorm Earring",
+    left_ring="Perception Ring",
+    right_ring="Strendu Ring",
+    back="Ogapepo Cape",
+	}
+	
+	sets['mab'] = {
+    ammo="Erlene's Notebook",
+    head={ name="Merlinic Hood", augments={'Mag. Acc.+25 "Mag.Atk.Bns."+25','"Drain" and "Aspir" potency +10','DEX+6','Mag. Acc.+15','"Mag.Atk.Bns."+11',}},
+    body={ name="Merlinic Jubbah", augments={'"Mag.Atk.Bns."+21','Magic burst dmg.+8%','MND+2',}},
+    hands={ name="Merlinic Dastanas", augments={'Mag. Acc.+22 "Mag.Atk.Bns."+22','Magic burst dmg.+10%','INT+1','"Mag.Atk.Bns."+8',}},
+    legs={ name="Merlinic Shalwar", augments={'Mag. Acc.+23 "Mag.Atk.Bns."+23','Enmity-2','MND+2','Mag. Acc.+13','"Mag.Atk.Bns."+12',}},
+    feet={ name="Merlinic Crackows", augments={'"Mag.Atk.Bns."+27','Magic burst dmg.+9%','INT+2','Mag. Acc.+7',}},
+    neck="Sanctity Necklace",
+    waist="Othila Sash",
+    left_ear="Friomisi Earring",
+    right_ear="Crematio Earring",
+    left_ring="Strendu Ring",
+    right_ring="Acumen Ring",
+    back={ name="Nantosuelta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',}},
+	}
+	
+	sets['mburst'] = {
+    ammo="Erlene's Notebook",
+    head={ name="Merlinic Hood", augments={'Mag. Acc.+25 "Mag.Atk.Bns."+25','"Drain" and "Aspir" potency +10','DEX+6','Mag. Acc.+15','"Mag.Atk.Bns."+11',}},
+    body={ name="Merlinic Jubbah", augments={'"Mag.Atk.Bns."+21','Magic burst dmg.+8%','MND+2',}},
+--    hands={ name="Merlinic Dastanas", augments={'Mag. Acc.+22 "Mag.Atk.Bns."+22','Magic burst dmg.+10%','INT+1','"Mag.Atk.Bns."+8',}},
+		hands="Amalric Gages",
+    legs={ name="Merlinic Shalwar", augments={'Mag. Acc.+23 "Mag.Atk.Bns."+23','Enmity-2','MND+2','Mag. Acc.+13','"Mag.Atk.Bns."+12',}},
+    feet={ name="Merlinic Crackows", augments={'"Mag.Atk.Bns."+27','Magic burst dmg.+9%','INT+2','Mag. Acc.+7',}},
+    neck="Mizu. Kubikazari",
+    waist="Othila Sash",
+    left_ear="Friomisi Earring",
+    right_ear="Crematio Earring",
+    left_ring="Locus Ring",
+    right_ring="Mujin Band",
+    back={ name="Nantosuelta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',}},
+	}
+	
+	sets['mdmg'] = {
+    ammo="Dosis Tathlum",
+    head={ name="Merlinic Hood", augments={'"Mag.Atk.Bns."+22','Magic Damage +14','INT+7',}},
+    body={ name="Merlinic Jubbah", augments={'Mag. Acc.+13 "Mag.Atk.Bns."+13','Magic Damage +16','DEX+3','"Mag.Atk.Bns."+13',}},
+    hands={ name="Merlinic Dastanas", augments={'Mag. Acc.+22 "Mag.Atk.Bns."+22','Magic burst dmg.+10%','INT+1','"Mag.Atk.Bns."+8',}},
+    legs="Theurgist's Slacks",
+    feet={ name="Merlinic Crackows", augments={'Mag. Acc.+24 "Mag.Atk.Bns."+24','Magic Damage +7','VIT+1','Mag. Acc.+7','"Mag.Atk.Bns."+14',}},
+    neck="Mizu. Kubikazari",
+    waist="Sekhmet Corset",
+    left_ear="Friomisi Earring",
+    right_ear="Crematio Earring",
+    left_ring="Strendu Ring",
+    right_ring="Mephitas's Ring",
+    back={ name="Nantosuelta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',}},
+	}
+	
+	sets['darkmagic'] = {
+		neck="Dark Torque",
+		body="geomancy Tunic +1",
+		--right_ring="Archon Ring"
+		feet="Azimuth tights",
+	}
+	
+	sets['mnd'] = {
+    main={ name="Serenity", augments={'MP+35','Enha.mag. skill +7','"Cure" potency +1%',}},
+    sub="Reign Grip",
+    ammo="Hydrocera",
+    head={ name="Merlinic Hood", augments={'Mag. Acc.+25 "Mag.Atk.Bns."+25','"Drain" and "Aspir" potency +10','DEX+6','Mag. Acc.+15','"Mag.Atk.Bns."+11',}},
+    body={ name="Merlinic Jubbah", augments={'"Mag.Atk.Bns."+21','Magic burst dmg.+8%','MND+2',}},
+    hands={ name="Merlinic Dastanas", augments={'Mag. Acc.+22 "Mag.Atk.Bns."+22','Magic burst dmg.+10%','INT+1','"Mag.Atk.Bns."+8',}},
+    legs={ name="Merlinic Shalwar", augments={'Mag. Acc.+23 "Mag.Atk.Bns."+23','Enmity-2','MND+2','Mag. Acc.+13','"Mag.Atk.Bns."+12',}},
+    feet={ name="Merlinic Crackows", augments={'Mag. Acc.+8','"Drain" and "Aspir" potency +6','"Mag.Atk.Bns."+4',}},
+    neck="Imbodla Necklace",
+    waist="Luminary Sash",
+    left_ear="Lifestorm Earring",
+    left_ring="Aquasoul Ring",
+    right_ring="Aquasoul Ring",
+    back="Refraction Cape",
+	}
+	
+	sets['attack'] = {
+	
+	}
+	
+	sets['da'] = {
+	}
+	
+	
+	
+	sets['WS'] = {}
+	-- Club
+	sets.WS['Shining Strike'] = sets.mab
+	sets.WS['Seraph Strike'] = sets.mab
+	sets.WS['Brainshaker'] = sets.da
+	sets.WS['Starlight'] = {}
+	sets.WS['Moonlight'] = {}
+	sets.WS['Skullbreaker'] = sets.da
+	sets.WS['True Strike'] = sets.da
+	sets.WS['Judgement'] = sets.da
+	sets.WS['Hexa Strike'] = {
+    head="geomancy Galero +1",
+--    body={ name="Hagondes Coat", augments={'Phys. dmg. taken -3%','"Fast Cast"+4',}},
+    hands="Yaoyotl Gloves",
+    legs="geomancy Pants +1",
+    feet="Serpentes Sabots",
+    neck="Asperity Necklace",
+    waist="Windbuffet belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Rajas Ring",
+    right_ring="Pyrosoul Ring",
+    back="Refraction Cape",
+	}
+	sets.WS['Black Halo'] = sets.da
+	sets.WS['Flash Nova'] = {
+		basesets={sets.mab},
+		feet="Jhakri cuffs +1",
+	}
+	
+	-- Staff
+	sets.WS['Heavy Swing'] = sets.da
+	sets.WS['Rock Crusher'] = sets.mab
+	sets.WS['Earth Crusher'] = sets.mab
+	sets.WS['Starbust'] = sets.mab
+	sets.WS['Sunburst'] = sets.mab
+	sets.WS['Shell Crusher'] = sets.da
+	sets.WS['Full Swing'] = sets.da
+	sets.WS['Spirit Taker'] = sets.da
+	sets.WS['Retribution'] = sets.da
+	sets.WS['Cataclysm'] = sets.da
+	
+	sets['JA'] = {}
+	
+	sets.JA['Bolster'] = {body="Bagua Tunic +1"}
+	sets.JA['Full Circle'] = {head="Azimuth Hood +1",}
+	sets.JA['Lasting Emanation'] = {}
+	sets.JA['Ecliptic Attrition'] = {}
+	sets.JA['Collimated Fervor'] = {}
+	sets.JA['Life Cycle'] = {
+		back={ name="Nantosuelta's Cape", augments={'INT+20','Mag. Acc+20 /Mag. Dmg.+20','INT+10','"Mag.Atk.Bns."+10',}},
+	}
+	sets.JA['Blaze of Glory'] = {}
+	sets.JA['Dematerialize'] = {}
+	sets.JA['Theurgic Focus'] = {}
+	sets.JA['Concentric Pulse'] = {}
+	sets.JA['Radial Arcana'] = {}
+	sets.JA['Widened Compas'] = {}
+	sets.JA['Entrust'] = {}
+	
+	-- Red Mage sub
+	sets.JA['Convert'] = {}
+	
+	
+	-- Dancer sub
+	
+	sets.dancer = {
+	}
+	
+	sets.JA['Drain Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Drain Samba II'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Aspir Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets['waltz'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Curing Waltz'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Curing Waltz II'] = {
+		baseset=sets.waltz
+	}
+	
+
+	sets.JA['Curing Waltz III'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Healing Waltz'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Divine Waltz'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Spectral Jig'] = {
+		baseset=sets.dancer
+	}
+
+	sets['steps'] = {
+		baseset=sets.dancer,
+		right_ear="Choreia Earring"
+	}
+
+	sets.JA['Quickstep'] = {
+		baseset=sets.steps
+	}
+
+	sets.JA['Box Step'] = {
+		baseset=sets.steps
+	}
+
+	sets.JA['Stutter Step'] = {
+		baseset=sets.steps
+	}
+	
+	sets['flourishes'] = {
+		baseset=sets.dancer
+	}
+	
+	sets.JA['Animated Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	sets.JA['Violent Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	sets.JA['Reverse Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	-- Magic
+	sets['fast cast'] = {
+		precast={
+    main={ name="Grioavolr", augments={'"Fast Cast"+6','DEX+7','"Mag.Atk.Bns."+23','Magic Damage +5',}},
+    sub="Clerisy Strap",
+    ammo="Sapience Orb",
+    head={ name="Merlinic Hood", augments={'"Mag.Atk.Bns."+22','Magic Damage +14','INT+7',}},
+    body="Anhur Robe",
+    hands="Repartie Gloves",
+    legs="Geo. Pants +1",
+    feet={ name="Merlinic Crackows", augments={'"Mag.Atk.Bns."+27','Magic burst dmg.+9%','INT+2','Mag. Acc.+7',}},
+    waist="Channeler's Stone",
+    left_ear="Loquac. Earring",
+    right_ear="Etiolation Earring",
+    left_ring="Prolix Ring",
+    back={ name="Lifestream Cape", augments={'Geomancy Skill +10','Indi. eff. dur. +20','Pet: Damage taken -1%',}},
+   }
+	}
+	
+	sets['quick cast'] = {
+		basesets={sets['fast cast']},
+		precast={
+		
+		},
+	}
+
+	sets['geomancy'] = {
+		basesets={sets['fast cast']},
+		main="Solstice",
+		sub={ name="Genbu's Shield", augments={'"Cure" potency +2%','"Cure" spellcasting time -2%',}},
+		range="Dunna",
+		head="Azimuth Hood +1",
+		body="Bagua Tunic +1",
+		hands="Geo. Mitaines +1",
+		legs="Bagua Pants",
+		feet="Azimuth gaiters",
+		back="Lifestream cape"
+	}
+	
+	sets['elemental'] = {
+		basesets={sets['fast cast'],sets.mburst,},
+		precast={
+			neck="Stoicheion Medal",
+			hands="Bagua mitaines",
+			feet="Tutyr sabots",
+		},
+		main={ name="Grioavolr", augments={'MP+38','Mag. Acc.+28','"Mag.Atk.Bns."+30','Magic Damage +3',}},
+		sub="Niobid Strap",
+	}
+	
+	sets['elementalmdmg'] = {
+		basesets={sets['fast cast'],sets.mdmg,},
+		precast={
+			neck="Stoicheion Medal",
+		},
+		main={ name="Grioavolr", augments={'MP+38','Mag. Acc.+28','"Mag.Atk.Bns."+30','Magic Damage +3',}},
+		sub="Niobid Strap",	}
+	
+	sets['enfeebling'] = {
+		basesets={sets['fast cast'],sets.macc,},
+		main={ name="Grioavolr", augments={'MP+38','Mag. Acc.+28','"Mag.Atk.Bns."+30','Magic Damage +3',}},
+	}
+
+	sets['MA'] = {}
+
+	sets.MA['Impact'] = {
+		baseset=sets['elemental'],
+		precast={
+			head="",
+			body="Twilight Cloak",		
+		},
+		head="",
+		body="Twilight Cloak"
+	}
+
+
+	sets.MA['Fire']  = {
+		 baseset=sets['elementalmdmg']
+	}
+
+	sets.MA['Fire II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Fire III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Fire IV']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Fire V']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Blizzard']  = {
+		 baseset=sets['elementalmdmg']
+	}
+
+	sets.MA['Blizzard II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Blizzard III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Blizzard IV']  = {
+		 baseset=sets['elemental']
+	}
+	sets.MA['Blizzard V']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Aero']  = {
+		 baseset=sets['elementalmdmg']
+	}
+
+	sets.MA['Aero II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Aero III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Aero IV']  = {
+		 baseset=sets['elemental']
+	}
+	sets.MA['Aero V']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stone']  = {
+		 baseset=sets['elementalmdmg']
+	}
+
+	sets.MA['Stone II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stone III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stone IV']  = {
+		 baseset=sets['elemental']
+	}
+	sets.MA['Stone V']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thunder']  = {
+		 baseset=sets['elementalmdmg']
+	}
+
+	sets.MA['Thunder II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thunder III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thunder IV']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thunder V']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Water']  = {
+		 baseset=sets['elementalmdmg']
+	}
+
+	sets.MA['Water II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Water III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Water IV']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Water V']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Fira']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Fira II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Fira III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Blizzara']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Blizzara II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Blizzara III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Aera']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Aera II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Aera III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stonera']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stonera II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stonera II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Stonera III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thundara']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thundara II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Thundara III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Watera']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Watera II']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Watera III']  = {
+		 baseset=sets['elemental']
+	}
+
+	sets.MA['Sleep'] = sets.enfeebling
+	sets.MA['Sleep II'] = sets.enfeebling
+	sets.MA['Drain'] = {
+		basesets={sets['fast cast'], sets.macc,},
+    head={ name="Bagua Galero", augments={'Enhances "Primeval Zeal" effect',}},
+    waist="Fucho-no-Obi",
+    feet={ name="Merlinic Crackows", augments={'Mag. Acc.+8','"Drain" and "Aspir" potency +6','"Mag.Atk.Bns."+4',}},
+    right_ring="Evanescence Ring",
+	}
+	sets.MA['Drain II'] = sets.MA['Drain']
+	sets.MA['Drain III'] = sets.MA['Drain']
+	sets.MA['Aspir'] = sets.MA['Drain']
+	sets.MA['Aspir II'] = sets.MA['Drain']
+	sets.MA['Aspir III'] = sets.MA['Drain']
+	
+	sets.MA['Indi-Regen'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Haste'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Haste'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Poison'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Refresh'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-STR'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-DEX'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-VIT'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-AGI'] = {
+		baseset=sets.geomancy
+	}
+	
+	sets.MA['Indi-INT'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-MND'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-CHR'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Fury'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Barrier'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Acumen'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Fend'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Precision'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Voidance'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Focus'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Attunement'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Wilt'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Frailty'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Fade'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Malaise'] = {
+		basesets={sets['fast cast'],sets.geomancy}
+	}
+
+	sets.MA['Indi-Slip'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Torpor'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Vex'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Languor'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Slow'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Paralysis'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Indi-Gravity'] = {
+		baseset=sets.geomancy
+	}
+
+
+	sets.MA['Geo-Regen'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Poison'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Refresh'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-STR'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-DEX'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-VIT'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-AGI'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-MND'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-CHR'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Fury'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Barrier'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Acumen'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Fend'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Precision'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Voidance'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Focus'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Attunement'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Wilt'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Frailty'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Fade'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Malaise'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Slip'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Torpor'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Vex'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Languor'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Slow'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Paralysis'] = {
+		baseset=sets.geomancy
+	}
+
+	sets.MA['Geo-Gravity'] = {
+		baseset=sets.geomancy
+	}
+
+	-- Red Mage Sub
+	sets.MA['Cure'] = {
+		basesets={sets['fast cast'],sets.mnd,},
+    main={ name="Serenity", augments={'MP+35','Enha.mag. skill +7','"Cure" potency +1%',}},
+    sub="Reign Grip",
+--    hands="Telchine Gloves",
+    neck="Phalaina Locket",
+    left_ring="Sirona's Ring",
+    right_ring="Ephedra Ring",
+	}
+	sets.MA['Cure II'] = sets.MA.Cure
+	sets.MA['Cure III'] = sets.MA.Cure
+	sets.MA['Cure IV'] = sets.MA.Cure
+
+
+	sets.MA['Protect'] = sets['fast cast']
+	sets.MA['Protect II'] = sets['fast cast']
+	sets.MA['Protect III'] = sets['fast cast']
+	sets.MA['Shell'] = sets['fast cast']
+	sets.MA['Shell II'] = sets['fast cast']
+	sets.MA['Blink'] = sets['fast cast']
+	sets.MA['Stoneskin'] = {
+		basesets={sets['fast cast'],sets['mnd'],},
+		head="Umuthi Hat",
+		waist="Siegel sash"
+	}
+	sets.MA['Aquaveil'] = sets['fast cast']
+	sets.MA['Phalanx'] = {
+		basesets={
+			sets['fast cast'],
+		},
+    main={ name="Serenity", augments={'MP+35','Enha.mag. skill +7','"Cure" potency +1%',}},
+    sub="Mephitis Grip",
+    body="Anhur Robe",
+    hands="Ayao's Gages",
+    waist={ name="Brocade Obi", augments={'Enha.mag. skill +2',}},
+    right_ear="Andoaa Earring",
+    back="Fi Follet Cape",
+--    feet="Rubeus Boots",
+	}
+	sets.MA['Haste'] = sets['fast cast']
+	sets.MA['Barfire'] = sets['fast cast']
+	sets.MA['Barblizzard'] = sets['fast cast']
+	sets.MA['Baraero'] = sets['fast cast']
+	sets.MA['Barstone'] = sets['fast cast']
+	sets.MA['Barthunder'] = sets['fast cast']
+	sets.MA['Barwater'] = sets['fast cast']
+	sets.MA['Barsleep'] = sets['fast cast']
+	sets.MA['Barpoison'] = sets['fast cast']
+	sets.MA['Barparalyze'] = sets['fast cast']
+	sets.MA['Barblind'] = sets['fast cast']
+	sets.MA['Barsilence'] = sets['fast cast']
+	sets.MA['Barpetrify'] = sets['fast cast']
+	sets.MA['Barvirus'] = sets['fast cast']
+	sets.MA['Enfire'] = sets['fast cast']
+	sets.MA['Enaero'] = sets['fast cast']
+	sets.MA['Enblizzard'] = sets['fast cast']
+	sets.MA['Enstone'] = sets['fast cast']
+	sets.MA['Enthunder'] = sets['fast cast']
+	sets.MA['Enwater'] = sets['fast cast']
+	sets.MA['Regen'] = sets['fast cast']
+	sets.MA['Refresh'] = {
+		basesets={
+			sets['fast cast'],
+		},
+		body="Azimuth coat",
+		hands="Bagua mitaines",
+		waist="Gishdubar sash",
+		feet="Inspirited Boots",
+	}
+	sets.MA['Invisible'] = sets['fast cast']
+	sets.MA['Sneak'] = sets['fast cast']
+	sets.MA['Deodorize'] = sets['fast cast']
+	sets.MA['Dia'] = sets['fast cast']
+	sets.MA['Dia II'] = sets['fast cast']
+	sets.MA['Diaga'] = sets['fast cast']
+	sets.MA['Slow'] = sets.enfeebling
+	sets.MA['Paralyze'] = sets.enfeebling
+	sets.MA['Silence'] = sets.enfeebling
+	sets.MA['Blaze Spikes'] = sets['fast cast']
+	sets.MA['Ice Spikes'] = sets['fast cast']
+	sets.MA['Poison'] = sets.enfeebling
+	sets.MA['Poison II'] = sets.enfeebling
+	sets.MA['Blind'] = sets.enfeebling
+	sets.MA['Bind'] = sets.enfeebling
+	sets.MA['Dispel'] = sets.enfeebling
+	sets.MA['Gravity'] = sets.enfeebling
+	sets.MA['Bio'] = sets['fast cast']
+	sets.MA['Bio II'] = sets['fast cast']
+	sets.MA['Distract'] = sets.enfeebling
+	sets.MA['Frazzle'] = sets.enfeebling
+
+
+	-- Equip this gear when certain buffs are active
+	
+	sets['buff active'] = {}
+	
+	send_command("gs c weapon club")
+	
+end

@@ -1,0 +1,835 @@
+require('LuaU')
+config = require('config')
+require('strings')
+require('tables')
+require('logger')
+texts = require('texts')
+require('maths')
+buffs = require('res/buffs')
+job_abilities = require('res/abilities')
+spells = require('res/spells')
+jobs = require('res/jobs')
+isbusy = require('isbusy')
+require('andreaslibs/auto_weaponskill')
+
+buff_names = {}
+spell_names = {}
+song_names = nil
+job_ability_names = {}
+job_names = {}
+
+_addon.name = 'Dancer Helper'
+_addon.author = 'Andreas Sheriff'
+_addon.version = '1'
+_addon.commands = {'dancer_helper', 'dh'}
+
+debug=false
+unit_tests = false
+text1  = nil
+text2  = nil
+text3  = nil
+text4  = nil
+text5  = nil
+text6  = nil
+text7  = nil
+text8  = nil
+text9  = nil
+text10 = nil
+
+poll_interval = 15
+count = 0
+doHeals = true
+doDebuffs = true
+doSamba = true
+doFanDance = false
+doSaber = false
+auto_tank = false
+doautosteps = false
+step_type = 'box step'
+-- Set stop_at_finishing_move greater than max moves than you can store to continuously do steps.
+stop_at_finishing_move = 7 -- When you have x or more fnishing moves, stop auto steps
+doreverseflourish = false
+
+samba_command = '/ja "haste samba" <me>'
+
+do_auto_weaponskills = true -- Do automatic weaponskills
+mobhp_ws_pct = 100 -- Percent at which to weaponskill for single weaponskills
+default_weaponskill_tp = 1000 -- TP to weaponskill at
+weaponskill_distance = 4 -- Distance within to weaponskill
+keep_aftermath_up = false -- Keep aftermath active
+aftermath_level = 3 -- Aftermath leel to maintain
+aftermath_weaponskill = nil -- The aftermath weaponskill
+weaponskills = "Rudra's Storm" --List of weaponskill to use
+close_skillchain = false -- Will attempt to close last chained weaponskill.  This will only work when weaponskills is defined as a table
+weaponskill_anyway = true -- If it can't close the skillchain, then use the first ws
+autows_forjob = "DNC" -- The job that this addon pertains to.
+
+
+----------------------
+debuffs = {3,4,5,6,8,9,11,12,13,20,21,31,107,128,129,130,131,132,133,134,135,
+					 136,137,138,139,140,141,142,144,145,146,147,148,149,156,167,174,175,
+					 189,298,404,540,557,558,559,560,561,562,563,564,565,566,567}
+-- Debuffs on player
+--current_debuffs = {}
+-- Debuffs on other players
+others_debuffs = {}
+-- By default, Malthar and Maltha are in there
+-- They'll send each other what debuffs they have on them
+-- We'll add them in the initialization code
+
+function table_inner_join(t1, t2)
+	-- Returns the inner join of two table values, ignoring keys
+	local retVal = {}
+	
+	for key, value in pairs(t2) do
+		if table.contains(t1, value) then
+			retVal[table.length(retVal)+1] = value
+		end
+	end
+	
+	return retVal
+end
+
+function canDoAbilities()
+	local retVal = true
+	local player = windower.ffxi.get_player()
+	local blocking = {2,10,16,19,28}
+	
+	if player.main_job == 'DNC' or player.sub_job == 'DNC' then
+		for key, id in pairs(blocking) do
+			if table.contains(player.buffs, id) == true then
+				retVal = false
+			end
+		end
+	else
+		retVal = false
+	end
+	
+	return retVal
+end
+
+windower.register_event('time change', function(new, old)
+	local hour
+	local minute
+	local thour
+	local tminute
+	
+	hour = math.round(math.floor(new/60))
+	minute = new - (hour*60)
+	
+	if hour == 0 then
+		thour = "00"
+	elseif hour < 10 then
+		thour = "0" .. tostring(hour)
+	else
+		thour = tostring(hour)
+	end
+	
+	if minute == 0 then
+		tminute = "00"
+	elseif minute < 10 then
+		tminute = "0" .. tostring(minute)
+	else
+		tminute = tostring(minute)
+	end
+	
+	texts.text(txt_dynamis_timer, "Time: " .. thour .. ":" .. tminute)
+end)
+
+txt_dynamis_timer = nil
+windower.register_event('zone change', function(new_id, old_id)
+	local player = windower.ffxi.get_player()
+	
+	if txt_dynamis_timer then
+		if player.name == "Malthar" and T{39,40,41,42,134,135}:contains(new_id) then
+			texts.visible(txt_dynamis_timer, true)
+		else
+			txt_dynamis_timer.visible(txt_dynamis_timer, false)
+		end
+	end
+end)
+
+local step_level
+function init()
+	for buffid, buffinfo in pairs(buffs) do
+		buff_names[buffinfo.en] = buffid
+	end
+	
+	for spellid, spellinfo in pairs(spells) do
+		spell_names[spellinfo.en] = spellid
+	end
+	
+
+	for ablilityid, abilityinfo in pairs(job_abilities) do
+			job_ability_names[abilityinfo.en] = abilityinfo.recast_id
+	end
+
+	for jobid, jobinfo in pairs(jobs) do
+		job_names[jobinfo.ens] = jobid
+	end	
+
+	step_level = {
+		[buff_names["Finishing Move 1"]]=1,
+		[buff_names["Finishing Move 2"]]=2,
+		[buff_names["Finishing Move 3"]]=3,
+		[buff_names["Finishing Move 4"]]=4,
+		[buff_names["Finishing Move 5"]]=5,
+		[buff_names["Finishing Move (6+)"]] = 6,
+	}
+
+	local player = windower.ffxi.get_player()
+	
+	if player and player.name == 'Maltana' then
+		doSaber = true
+		if player.main_job == "DNC" then
+			step_type = "feather step"
+		end
+	end
+end
+
+windower.register_event('login', function(name)
+	init()
+end)
+
+lua_loop = nil
+windower.register_event('load', function()
+	-- Setup unit testing text boxes
+	text1  = texts.new(' ')
+	text2  = texts.new(' ')
+	text3  = texts.new(' ')
+	text4  = texts.new(' ')
+	text5  = texts.new(' ')
+	text6  = texts.new(' ')
+	text7  = texts.new(' ')
+	text8  = texts.new(' ')
+	text9  = texts.new(' ')
+	text10 = texts.new(' ')
+	txt_dynamis_timer = texts.new('Time: ')
+	
+	texts.pos(text1,  10,200)
+	texts.pos(text2,  10,220)
+	texts.pos(text3,  10,240)
+	texts.pos(text4,  10,260)
+	texts.pos(text5,  10,280)
+	texts.pos(text6,  10,300)
+	texts.pos(text7,  10,320)
+	texts.pos(text8,  10,340)
+	texts.pos(text9,  10,360)
+	texts.pos(text10, 10,380)
+	texts.pos(txt_dynamis_timer, 600, 20)
+	
+	if unit_tests == true then
+		texts.visible(text1, true)
+		texts.visible(text2, true)
+		texts.visible(text3, true)
+		texts.visible(text4, true)
+		texts.visible(text5, true)
+		texts.visible(text6, true)
+		texts.visible(text7, true)
+		texts.visible(text8, true)
+		texts.visible(text9, true)
+		texts.visible(text10,true)
+	end
+	
+	texts.visible(txt_dynamis_timer, false)
+	
+	init()
+	
+	lua_loop = coroutine.schedule(infinity_loop, 1)
+	
+	if not lua_loop then
+		windower.add_to_chat(2,'Failed to create infinity loop.')
+	end
+end)
+
+windower.register_event('unload', function()
+	if lua_loop then
+		coroutine.close(lua_loop)
+	end
+end)
+
+function player_gainbuff(player_name, buffid)
+	if table.contains(debuffs, buffid) then
+		if not table.containskey(others_debuffs, player_name) then
+			others_debuffs[player_name] = {}
+		end
+
+		others_debuffs[player_name][buffid] = true		
+	end	
+end
+
+function player_losebuff(player_name, buffid)
+	if table.contains(debuffs, buffid) then
+		if not table.containskey(others_debuffs, player_name) then
+			others_debuffs[player_name] = {}
+		end
+
+		others_debuffs[player_name][buffid] = false		
+	end	
+end
+
+windower.register_event('gain buff', 'lose buff', function(buffid)
+	local temp
+	local player = windower.ffxi.get_player()
+	
+	if player.status == 1 then
+		temp = isbusy['isbusy'] or do_heals() or do_debuffs() or do_samba() or do_fandance()
+	end
+end)
+
+windower.register_event('status change', function(new, old)
+	if new == 1 then
+		local temp
+		
+		temp = isbusy['isbusy'] or do_heals() or do_debuffs() or do_samba() or do_fandance()
+	end
+end)
+
+function isValidMember(member)
+--	windower.add_to_chat(5, type(member))
+	local retVal = false
+		if member ~= nil and member.mob ~= nill and member.mob.distance < 201 and member.hpp > 0 then
+			retVal = true
+		end
+		return retVal
+end
+
+-- Don't cast on NPC's
+npcs={"Kupipi", "Ulmia", "Trion","Cherukiki","Joachim"}
+function isNPC(name)
+	local retVal = false
+	if table.contains(npcs, name) == true then
+		retVal = true
+	end
+	return retVal
+end
+
+function do_heals()
+	if windower.ffxi.get_info().logged_in == false or doHeals == false then
+		return false
+	end
+	local player = windower.ffxi.get_player()
+	local party
+	local member
+	local temp = ""
+	local key = ""
+	local retVal = false
+	
+	-- Can't curing waltz with saber dance up
+	if table.contains(player.buffs, 410) then
+		return false
+	end
+	
+	--windower.add_to_chat(2, 'In do heals')
+	if player.main_job == 'DNC' or player.sub_job == 'DNC' then
+		party = windower.ffxi.get_party()
+		
+		--for key,value in pairs(party) do
+			--temp = temp .. key .. " "
+		--end
+		
+		--windower.add_to_chat(4, temp)
+		if true or player.status == 1 then
+		  --windower.add_to_chat(2, 'Engaged; check for healing: party length: ' .. tostring(table.length(party)))
+		  local abil_recasts = windower.ffxi.get_ability_recasts()
+		  
+			for key,member in pairs(party) do
+			  if type(member) == 'table' and isValidMember(member) and 
+			    ((member.name == player.name and member.hpp < 80) or (T{'Maltha', 'Malthar', 'Maltana'}:contains(member.name) and member.hpp < 70) or (member.hpp < 50)) and 
+			    player.vitals.tp >= 500 and abil_recasts[217] == 0 then
+		  		if canDoAbilities() == true and isNPC(member.name) == false then
+				  	windower.send_command('input /ja "curing waltz iii" <' .. key .. '>')
+				  end
+					healing_delay = 1
+			  	retVal = true
+			  	break
+			  end
+			end
+		end
+	end
+	
+	return retVal
+end
+
+function do_debuffs()
+	if windower.ffxi.get_info().logged_in == false or doDebuffs == false then
+		return false
+	end
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local abil_recasts = windower.ffxi.get_ability_recasts()
+	local current_debuffs = windower.ffxi.get_player()['buffs']
+	local hasDebuff = false
+	
+	-- Can't healing waltz with saber dance up
+	if table.contains(player.buffs, 410) then
+		return false
+	end
+	
+	if not doHeals then return false end
+
+	for key,debuff in pairs(current_debuffs) do
+		if table.contains(debuffs, debuff) then
+			hasDebuff = true
+			break
+		end
+	end
+	
+	if hasDebuff == true and player.vitals.tp >= 200 and player.status == 1 and abil_recasts[215] == 0 then
+		--windower.add_to_chat(2, 'healing waltz')
+		if canDoAbilities() == true then
+			windower.send_command('input /ja "healing waltz" <me>')
+		end
+		retVal = true
+	end
+	return retVal
+end
+
+function do_samba()
+	if windower.ffxi.get_info().logged_in == false then
+		text1.text = 'do_samba: not logged in'
+		return false
+	end
+	
+	local abil_recasts = windower.ffxi.get_ability_recasts()
+	local retval = false
+	local player = windower.ffxi.get_player()
+	
+	text1.text = 'do_samba: player.vitals.tp = ' .. tostring(player.vitals.tp) .. ', ' ..
+	                       'player.status = ' .. player.status .. ', ' ..
+	                       'abil_recasts[216] = ' .. tostring(abil_recasts[216]) .. ', ' ..
+	                       'player.buffs = ' .. table.tostring(player.buffs) .. ', ' ..
+	                       'canDoAbilities() = ' .. tostring(canDoAbilities()) .. ', ' ..
+	                       'samba_command = ' .. samba_command
+	                       
+	if doSamba == true and player.vitals.tp >= 350 and player.status == 1 and abil_recasts[216] == 0 and
+		(table.contains(player.buffs, 368)~=true and 
+		 table.contains(player.buffs, 369)~=true and 
+		 table.contains(player.buffs, 370)~=true) then
+		if canDoAbilities() == true then
+			text2.text = "windower.send_command('input ' .. " .. samba_command .. ")"
+			-- If fan dance is up, cancel it.
+			if table.contains(player.buffs, 411) == true then
+					windower.send_command('cancel 411')
+			end
+			windower.send_command('input ' .. samba_command)
+			retval = true
+		else
+			text2.text = 'if[line 275] evaluated to false'
+		end
+	else
+		text2.text = 'if[line 275] evaluated to false'
+	end
+	return retval
+end
+
+function do_saber_dance()
+	if windower.ffxi.get_info().logged_in == false then
+		return false
+	end
+	
+	local abil_recasts = windower.ffxi.get_ability_recasts()
+	local retval = false
+	local player = windower.ffxi.get_player()
+	
+	                       
+	if doSaber== true and player.status == 1 and abil_recasts[219] == 0 then
+		if canDoAbilities() == true then
+			windower.send_command('input /ja "saber dance" <me>')
+			retval = true
+		end
+	end
+	return retval
+end
+
+function do_fandance()
+	if windower.ffxi.get_info().logged_in == false then
+		return false
+	end
+	
+	local abil_recasts = windower.ffxi.get_ability_recasts()
+	local retval = false
+	local player = windower.ffxi.get_player()
+	if doFanDance == true and player.status == 1 and abil_recasts[224] == 0 then
+		if canDoAbilities() == true then
+			windower.send_command('input /ja "fan dance" <me>')
+		end
+	end
+end
+
+function count_finishing_moves()
+	local player = windower.ffxi.get_player()
+	local moveCount = 0
+	
+	for key, value in pairs(player.buffs) do
+		if T{buff_names["Finishing Move 1"],buff_names["Finishing Move 2"],buff_names["Finishing Move 3"],buff_names["Finishing Move 4"],buff_names["Finishing Move 5"],buff_names["Finishing Move (6+)"]}:contains(value) then
+			moveCount = step_level[value]
+			break
+		end
+	end
+	
+
+	return moveCount	
+end
+
+function auto_tank()
+	local retVal = false
+	if windower.ffxi.get_info().logged_in == false or auto_tank == false then
+		return retVal
+	end
+	
+	local player = windower.ffxi.get_player()
+	local selfmob = windower.ffxi.get_mob_by_target('me')
+	local enemyfacing = 0
+	local mefacing = 0
+	local tankfacing = 0
+	
+	-- Tank only if engaged
+	if player.status ~= 1 then
+		return retVal
+	end
+	
+	local enemy = windower.ffxi.get_mob_by_target('t')
+	
+	-- This shouldn't be nil because we're engaged, right?
+	if enemy == nil then
+		return false
+	end
+	
+	enemyfacing = enemy.facing
+	mefacing = selfmob.facing
+	
+	tankfacing = math.abs(mefacing - math.pi)
+	local recasts = windower.ffxi.get_ability_recasts()
+	
+	if math.abs(enemyfacing - tankfacing) > (math.pi / 4) then
+		-- Need to provoke
+		if player.sub_job == 'WAR' and recasts[5] == 0 then
+			windower.ffx.send_command('input /provoke <t>')
+		elseif recasts[221] == 0 and count_finishing_moves() > 0 then
+				windower.ffxi.send_command('input /ja "animated flourish" <t>')
+		end
+	end
+end
+
+step_delay = 0
+function auto_steps()
+	local retVal = false
+	if windower.ffxi.get_info().logged_in == false or doautosteps == false then
+		return retVal
+	end
+	
+	if  step_delay > 0 then
+		step_delay = step_delay - 1
+		return retVal
+	end
+	
+	local player = windower.ffxi.get_player()
+	local recasts = windower.ffxi.get_ability_recasts()
+	local canPresto = ''
+	busy_delay = 1
+	
+	
+	-- Steps only if engaged
+	if player.status ~= 1 then
+		return retVal
+	end
+	
+	local current_moves = count_finishing_moves()
+	-- Make reverse flourish independent of steps
+	if recasts[job_ability_names["Reverse Flourish"]] == 0 
+		 and doreverseflourish == true 
+		 --and player.vitals.tp < 2000 
+		 and current_moves >= 5 
+	then
+		windower.send_command('input /ja "reverse flourish" <me>')
+		return true
+	end
+
+	if recasts[job_ability_names['Presto']] == 0 then
+		canPresto = 'input /ja presto <me> ; wait 1 ; '
+		busy_delay = busy_delay + 1
+	end
+	
+	if windower.ffxi.get_player().main_job ~= 'DNC' and 
+		string.lower(step_type) == 'feather step' 
+	then
+		step_type = 'box step'
+	end
+	
+
+	-- See if we can do steps (all the steps have the same recast_id
+	if recasts[job_ability_names['Box Step']] == 0 
+	   and player.vitals.tp >= 100 
+	   and player.vitals.hpp > 75 then
+		if current_moves > 3 then
+			canPresto = ''
+			busy_delay = busy_delay - 1
+		end	
+		
+		-- Don't do steps if there are alreay 5 finishing moves or tp >= 1000
+--		if current_moves == 5 
+			 -- or player.vitals.tp >= 1000 
+--		then
+--			return retVal
+--		end
+		
+		-- Only do step when we have less than stop_at_finishing_move
+		--windower.add_to_chat(5, "stop_at_finishing_move=" .. tostring(stop_at_finishing_move) 
+		--                      .."----current_moves" .. tostring(current_moves))
+		if  current_moves < stop_at_finishing_move then
+			windower.send_command( canPresto .. 'input /ja "' .. step_type .. '" <t>')
+			retVal = true
+		end
+	end
+	
+	return retVal
+end
+
+help_text = {
+'Usage: dh options',
+'optons:',
+'    doHeals    [true|false]      -- automatically heal self and alliance',
+'    debuffs    [true|false]      -- automatically debuff self',
+'    dosamba    [true|false]      -- automatically does configured samba',
+'    dofandance [true|false]      -- automatically keeps fan dance up; cancels dosamba',
+'    polltime (#)                 -- Sets the poll interval between actions in 1/30 second',
+'    doautostep [true|false]      -- Automatically does the configured steps',    
+'    arf        [true|false]      -- Automatically does reverse flourish after step level 5',
+'    steptype   [box step|...]    -- Set the configured step type',
+'    sambatype  [haste samba|...] -- Set the configured samba type'
+}
+function help()
+	for _, value in pairs(help_text) do
+		windower.add_to_chat(3, value)
+	end
+end
+
+windower.register_event('addon command', function(...)
+	local args = {...}
+	local command = args[1]
+
+	if     command == 'doheals' then
+		if table.length(args) < 2 then
+			if doHeals == true then
+				doHeals = false
+			else
+				doHeals = true
+			end
+		else
+			if args[2] == 'true' or args[2] == 'yes' then
+				doHeals = true
+			else
+				doHeals = false
+			end
+		end
+		windower.add_to_chat(2, 'doHeals=' .. tostring(doHeals))
+	elseif command == 'debuffs' then
+		if table.length(args) < 2 then
+			if args[2] == 'true' or args[2] == 'yes' then
+				doDebuffs = true
+			else
+				doDebuffs = false
+			end
+		else
+		
+		end
+		windower.add_to_chat(2, 'dodebuffs=' .. tostring(dodebuffs))
+	elseif command == 'dosamba' then
+		if table.length(args) < 2 then
+			if doSamba == true then
+				doSamba = false
+			else
+				doSamba = true
+				doFanDance = false
+			end
+		else
+			if args[2] == 'true' or args[2] == 'yes' then
+				doSamba = true
+				doFanDance = false
+			else
+				doSamba = false
+			end
+		end
+		windower.add_to_chat(2, 'dosamba=' .. tostring(doSamba))
+	elseif command == 'dofandance' then
+		if table.length(args) < 2 then
+			if doFanDance == true then
+				doFanDance = false
+			else
+				doSamba = false
+				doFanDance = true
+			end
+		else
+			if args[2] == 'true' or args[2] == 'yes' then
+				doSamba = false
+				doFanDance = true
+			else
+				doFanDance = false
+			end
+		end
+		windower.add_to_chat(2, 'dofandance=' .. tostring(doFanDance))
+	elseif command == 'helperon' then
+	
+	elseif command == 'helperoff' then
+	
+	elseif command == 'polltime' or command == 'pollinterval' then
+		if table.length(args) > 1 then
+			poll_interval = tonumber(args[2])
+		else
+			poll_interval = 15
+		end
+	elseif command == 'autotank' then
+		if table.length(args) > 1 then
+			if args[2] == 'true' then
+				auto_tank = true
+			else
+				auto_tank = false
+			end
+		else
+			if auto_tank == true then
+				auto_tank = false
+			else
+				auto_tank = true
+			end
+		end
+		windower.add_to_chat(2, 'poll_interval=' .. tostring(poll_interval))
+	elseif T{'autostep', 'autosteps', 'doautostep', 'doautosteps', 'dosteps'}:contains(string.lower(command)) then
+		if table.length(args) > 1 then
+			if args[2] == 'true' then
+				doautosteps = true
+			else
+				doautosteps = false
+			end
+		else
+			if doautosteps == true then
+				doautosteps = false
+			else
+				doautosteps = true
+			end
+		end
+		windower.add_to_chat(2, 'auto_steps=' .. tostring(doautosteps))
+	elseif T{'autoreverseflourish', 'doautoreverseflourish', 'doreverseflourish', 'drf', 'arf'}:contains(string.lower(command)) then
+		if table.length(args) > 1 then
+			if args[2] == 'true' then
+				doreverseflourish = true
+			else
+				doreverseflourish = false
+			end
+		else
+			if doautosteps == true then
+				doreverseflourish = false
+			else
+				doreverseflourish = true
+			end
+		end
+		windower.add_to_chat(2, 'doreverseflourish=' .. tostring(doreverseflourish))
+	elseif command == 'steptype' then
+		local tmp_step_type = ''
+		local space= ''
+		local index = 2
+		while index <= table.length(args) do
+			tmp_step_type = tmp_step_type .. space .. args[index]
+			space = ' '
+			index = index +1
+		end
+		
+		if T{'box step', 'quickstep', 'sutter step', 'feather step'}:contains(string.lower(tmp_step_type)) then
+			step_type = tmp_step_type			
+		else
+			tmp_step_type = 'Invalid step type'
+		end
+		
+		windower.add_to_chat(2, 'steptype=' .. tmp_step_type)
+	elseif command == 'sambatype' then
+		local tmp_samba_type = ''
+		local space= ''
+		local index = 2
+		while index <= table.length(args) do
+			tmp_samba_type = tmp_samba_type .. space .. args[index]
+			space = ' '
+			index = index +1
+		end
+		
+		if T{'haste samba', 'drain samba', 'drain samba ii', 'drain samba iii', 'aspir samba', 'aspir samba ii'}:contains(string.lower(tmp_samba_type)) then
+			samba_command = '/ja "' .. tmp_samba_type .. '" <me>'
+			-- to do: Add code to make sure the user is of the proper level/sub level to do type of samba	
+		else
+			tmp_samba_type = 'Invalid samba type; samba type not set.'
+		end
+		
+		windower.add_to_chat(2, 'sambatype=' .. tmp_samba_type)
+	elseif T{"saber", "dosaber", "dosaberdance"}:contains(command) then
+		if args[2] then
+			if T{"true", "yes", "on"}:contains(string.lower(args[2])) then
+				doSaber = true
+			else
+				doSaber = false
+			end
+		else
+			if doSaber == true then
+				doSaber = false
+			else
+				doSaber = true
+			end
+		end
+		windower.add_to_chat(2, 'doSaber=' .. tostring(doSaber))
+	elseif command == "player" then
+	-- Syntax lua c dancer_helper player {playername} [gainbuff|losebuff] {buffid}
+		if table.length(args) > 3 then
+			if args[2] == 'gainbuff' then
+				player_gainbuff(args[2], tonumber(args[4]))
+			elseif args[2] == 'losebuff' then
+				player_losebuff(args[2], tonumber(args[4]))
+			end
+		end	
+		windower.add_to_chat(2, 'player=' .. tostring(player))
+	else
+		-- Default is to show help
+		help()
+	end
+end)
+
+
+windower.register_event('load', function()
+	debug_textbox = texts.new(' ')
+	debug_textbox.pos(debug_textbox, 50,700)
+	if debug == true then
+		texts.visible(debug_textbox, true)
+	end
+end)
+
+-- If you're less than or equal to 75 hp, then return true so that tp is saved for healing
+function needs_healing()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	
+	if player ~= nil and player.vitals.hpp <= 75 then
+		retVal = true
+	end
+	
+	return retVal
+end
+
+--ifl = 0
+function infinity_loop()
+	local ifl
+	while true do
+		ifl = 1
+		--if ifl >= 0 then
+			--ifl = ifl -1
+		--else
+			temp = isbusy['isbusy'] 
+			       or do_heals() 
+			       or do_debuffs() 
+						 or needs_healing() 
+						 or do_samba() 
+						 or do_fandance() 
+						 or do_saber_dance()
+						 or auto_weaponskill()
+						 or auto_steps()
+			if temp then ifl = 2 end
+		--end
+		coroutine.sleep(ifl)
+	end
+end

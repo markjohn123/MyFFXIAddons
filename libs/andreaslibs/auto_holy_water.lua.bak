@@ -1,0 +1,26 @@
+require('resource_functions')
+
+function auto_holy_water()
+	local retVal = false
+	if has_item(item_names["Holy Water"]) == true then
+		local player = windower.ffxi.get_player()
+		if player ~= nil and has_item(item_names["Holy Water"]) and
+		                     table.contains(player.buffs, 9 ) == true or
+		                     table.contains(player.buffs, 15) == true then
+			-- There is also 20 for curse, but that might be super curse
+			windower.send_command('input /item "holy water" <me>')
+			retVal = true
+		end
+	elseif has_item(item_names["Hallowed Water"]) == true then
+		local player = windower.ffxi.get_player()
+		if player ~= nil and has_item(item_names["Hallowed Water"]) and
+		                     table.contains(player.buffs, 9 ) == true or
+		                     table.contains(player.buffs, 15) == true then
+			-- There is also 20 for curse, but that might be super curse
+			windower.send_command('input /item "Hallowed Water" <me>')
+			retVal = true
+		end
+
+	end
+	return retVal
+end

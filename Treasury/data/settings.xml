@@ -1,0 +1,32 @@
+<?xml version="1.1" ?>
+<settings>
+    <global>
+        <AutoDrop>false</AutoDrop>
+        <AutoStack>true</AutoStack>
+        <Delay>0</Delay>
+        <Drop>Pebble</Drop>
+        <Lot />
+        <Pass>Land Crab Meat</Pass>
+        <Verbose>false</Verbose>
+    </global>
+    <ababba>
+        <AutoDrop>true</AutoDrop>
+        <Drop>A.Abjuration: Hn.,A.Abjuration: Lg.,A.Abjuration: Bd.,Moldy Buckler,A.Abjuration: Ft.,A.Abjuration: Hd.,Aquarian Tatter</Drop>
+    </ababba>
+    <andiamo>
+        <AutoDrop>true</AutoDrop>
+        <Drop>Goblin Weel,Neptunal Tatter,N.Abjuration: Lg.,Dwarf Pugil,N.Abjuration: Hn.,Mannequin Hands,Auric Sand,W.Abjuration: Lg.,Goldfish Basket,W.Abjuration: Hn.,Lizard Egg,Flint Stone,Rock Salt,Magicked Skull,F.Abjuration: Lg.,Dorter Key,F.Abjuration: Bd.,Shrimp Lantern,F.Abjuration: Hn.,Wyrmal Tatter,Zeruhn Soot,Furia Pigment,Little Worm,Pine Nuts,Insect Wing,Northern Fur,F.Abjuration: Hd.,Mannequin Legs,Mannequin Head,Bloody Robe,Acorn,W.Abjuration: Bd.,Mannequin Body,Illuminink,N.Abjuration: Hd.,F.Abjuration: Ft.,Seasoning Stone,Hare Meat,Mannequin Feet,W.Abjuration: Hd.,N.Abjuration: Bd.,N.Abjuration: Ft.,Bat Wing,Lugworm,Pebble,W.Abjuration: Ft.,Fossilized Bone</Drop>
+    </andiamo>
+    <deathcab>
+        <AutoDrop>true</AutoDrop>
+        <Drop>Mannequin Hands,Mannequin Body,Drill Calamary,Pebble,Moldy Buckler</Drop>
+    </deathcab>
+    <notapup>
+        <AutoDrop>true</AutoDrop>
+        <Drop>Moldy Buckler,Mannequin Hands</Drop>
+    </notapup>
+    <qualo>
+        <AutoDrop>true</AutoDrop>
+        <Drop>Moon Carrot,Shrimp Lantern,Pup. Testimony,Mannequin Legs,Fish Bones,Giant Scale,Mannequin Head,Mannequin Hands,Bat Fang,A.Abjuration: Bd.,A.Abjuration: Hd.,Dwarf Pugil,Acorn,Riftsand,Lizard Egg,Likho Talon,A.Abjuration: Lg.,Flint Stone,Pine Nuts,A.Abjuration: Ft.,Hydra Beret,Behemoth Tongue,Tin Ore,A.Abjuration: Hn.,Copper Ore,Mannequin Body,Mannequin Feet,Moldy Buckler,Pebble,Illuminink,Cluster Core</Drop>
+    </qualo>
+</settings>

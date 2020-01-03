@@ -1,0 +1,517 @@
+function get_sets()
+	local baseset = 'baseset'
+	local PDT     = 'PDT'
+	local precast = 'precast'
+	local midcast = 'midcast'
+	local aftercast='aftercast'
+	
+	-- Redefine gear to call gs c gear
+	send_command('alias gear gs c gear')
+	send_command('alias naked gs equip naked')
+	
+
+	sets["enmity"] = {
+    ammo="Paeapua",
+    head={ name="Cizin Helm +1", augments={'Phys. dmg. taken -3%','Accuracy+4',}},
+    hands={ name="Cizin Mufflers +1", augments={'Phys. dmg. taken -4%',}},
+    legs={ name="Odyssean Cuisses", augments={'Mag. Acc.+19 "Mag.Atk.Bns."+19','Weapon skill damage +1%','MND+4','Mag. Acc.+5','"Mag.Atk.Bns."+12',}},
+    feet={ name="Yorium Sabatons", augments={'Enmity+6',}},
+    left_ear="Trux Earring",
+    right_ear="Cryptic Earring",
+    left_ring="Pernicious Ring",
+    right_ring="Petrov Ring",
+	}
+	
+	--  These are the weapons I use
+	sets["weapons"] = {}
+	
+	sets.weapons["axe and shield"] = {
+    main="Farsha",
+    sub="Blurred shield",
+	}
+		
+	sets.weapons["axe and dagger"] = {
+    main="Farsha",
+    sub="Malevolence",
+	}
+		
+	sets['Idle'] = {
+    ammo="Angha Gem",
+    head={ name="Valorous Mask", augments={'Accuracy+25','"Dbl.Atk."+2','Attack+4',}},
+    body={ name="Jumalik Mail", augments={'HP+25','Enmity+3',}},
+    hands={ name="Cizin Mufflers +1", augments={'Phys. dmg. taken -4%',}},
+    legs={ name="Valor. Hose", augments={'Accuracy+30','Rng.Acc.+23','Accuracy+17 Attack+17','Mag. Acc.+4 "Mag.Atk.Bns."+4',}},
+    feet="Hermes' Sandals",
+    neck="Diemer Gorget",
+    waist="Flume Belt",
+    left_ear="Etiolation Earring",
+    right_ear="Sanare Earring",
+    left_ring="Defending Ring",
+    right_ring={ name="Dark Ring", augments={'Magic dmg. taken -3%','Phys. dmg. taken -6%','Spell interruption rate down -3%',}},
+    back="Repulse Mantle",
+	}
+	
+	sets['Engaged'] = {
+    ammo="Ginsen",
+    head={ name="Valorous Mask", augments={'Accuracy+25','"Dbl.Atk."+2','Attack+4',}},
+    body="Boii lorica +1",
+    hands={ name="Founder's Gauntlets", augments={'STR+10','Attack+15','"Mag.Atk.Bns."+15','Phys. dmg. taken -5%',}},
+    legs={ name="Odyssean Cuisses", augments={'Mag. Acc.+19 "Mag.Atk.Bns."+19','Weapon skill damage +1%','MND+4','Mag. Acc.+5','"Mag.Atk.Bns."+12',}},
+    feet={ name="Loyalist Sabatons", augments={'STR+3','Attack+5',}},
+    neck="Asperity Necklace",
+    waist="Windbuffet Belt +1",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Pernicious Ring",
+    right_ring="Petrov Ring",
+    back="Atheling Mantle",
+	}
+	
+	sets['Resting']   = sets.Idle
+
+	local tempIdleset = sets.Idle
+	local tempEngagedset = sets.Engaged
+	
+	
+	sets.Idle['NORMAL'] = sets.Idle
+	sets.Engaged['NORMAL'] = sets.Engaged
+	sets.Resting['NORMAL'] = sets.Resting
+
+	sets.Idle['ENMITY'] = tempIdleset
+
+	sets.Engaged['ENMITY'] = {
+		baseset=tempEngagedset,
+	}
+	
+	-- PDT and MDT gear
+	sets.Idle['ACC'] = tempIdleset
+	
+	sets.Engaged['ACC'] = {
+    ammo="Ginsen",
+    head={ name="Valorous Mask", augments={'Accuracy+25','"Dbl.Atk."+2','Attack+4',}},
+    body="Boii lorica +1",
+    hands="Boii Mufflers +1",
+    legs={ name="Valor. Hose", augments={'Accuracy+30','Rng.Acc.+23','Accuracy+17 Attack+17','Mag. Acc.+4 "Mag.Atk.Bns."+4',}},
+    feet={ name="Founder's Greaves", augments={'VIT+9','Accuracy+14','"Mag.Atk.Bns."+13','Mag. Evasion+15',}},
+    neck="Iqabi Necklace",
+    waist="Kentarch Belt",
+    left_ear="Tripudio Earring",
+    right_ear="Zennaroi Earring",
+    left_ring="Rajas Ring",
+    right_ring="Petrov Ring",
+    back="Atheling Mantle",
+	}
+		
+	sets.Idle['PDT'] = {
+		baseset=tempIdleset,
+			PDT={
+		}		
+	}
+	
+	sets.Engaged['PDT'] = {
+		baseset=tempEngagedset,
+    ammo="Angha Gem",
+    head="Ighwa Cap",
+    body="Chozor. Coselete",
+    hands={ name="Cizin Mufflers +1", augments={'Phys. dmg. taken -4%',}},
+    legs={ name="Xaddi Cuisses", augments={'HP+45','Accuracy+15','Phys. dmg. taken -3',}},
+    feet={ name="Amm Greaves", augments={'HP+40','VIT+7','Accuracy+12',}},
+    neck="Diemer Gorget",
+    waist="Flume Belt",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Defending Ring",
+    right_ring="Petrov Ring",
+    back="Mollusca Mantle",
+			PDT={
+		}		
+	}
+
+	sets.Idle['ACCPDT'] = {
+		baseset=sets.Idle.PDT,
+	}
+	
+	sets.Engaged['ACCPDT'] = {
+		baseset=sets.Engaged.PDT,
+    ammo="Ginsen",
+    head={ name="Valorous Mask", augments={'Accuracy+25','"Dbl.Atk."+2','Attack+4',}},
+    body={ name="Xaddi Mail", augments={'HP+45','Accuracy+15','Phys. dmg. taken -3',}},
+    hands={ name="Odyssean Gauntlets", augments={'STR+8','Accuracy+29','"Dbl. Atk."+3'}},
+    legs={ name="Xaddi Cuisses", augments={'HP+45','Accuracy+15','Phys. dmg. taken -3',}},
+    feet={ name="Amm Greaves", augments={'HP+40','VIT+7','Accuracy+12',}},
+    neck="Diemer Gorget",
+    waist="Flume Belt",
+    left_ear="Steelflash Earring",
+    right_ear="Bladeborn Earring",
+    left_ring="Defending Ring",
+    right_ring="Patricius Ring",
+    back="Mollusca Mantle",
+    PDT={
+    }
+	}
+
+	sets.Idle['PDTACC'] = {
+		baseset=sets.Idle.PDT,
+	}
+	
+	sets.Engaged['PDTACC'] = {
+		baseset=sets.Engaged.PDT,
+	}
+
+	sets.Idle['HPDT'] = {
+		baseset=sets.Idle.PDT,
+		PDT={
+		
+		}
+		
+	}
+	
+	sets.Engaged['HPDT'] = {
+		baseset=sets.Engaged.HPDT,
+		PDT={
+		
+		}
+		
+	}
+	
+	sets.Idle['MDT'] = {
+		baseset=tempIdleset,
+				PDT={
+				}
+	}
+	
+	sets.Engaged['MDT'] = {
+		baseset=tempEngagedset,
+				PDT={
+				}
+	}
+	
+	sets.Idle['HMDT'] = {
+		baseset=sets.Idle.MDT,
+		PDT={
+		
+		}
+	}
+	
+	sets.Engaged['HMDT'] = {
+		baseset=sets.Engaged.MDT,
+		PDT={
+		
+		}
+	}
+	
+
+	sets.Idle['DT'] = {
+		baseset=sets.Engaged.PDT,
+		PDT={
+		}
+	}
+	
+	sets.Engaged['DT'] = {
+		baseset=sets.Engaged.PDT,
+		PDT={
+		}
+	}
+	
+	sets.Idle['TWILIGHT'] = {
+		baseset=sets.Idle['PDT'],
+		head='Twilight Helm',
+		body='Twilight Mail',
+		PDT={
+			head='Twilight Helm',
+			body='Twilight Mail'
+		}
+	}
+	
+	sets.Engaged['TWILIGHT'] = {
+		baseset=sets.Engaged['PDT'],
+		head='Twilight Helm',
+		body='Twilight Mail',
+		PDT={
+			head='Twilight Helm',
+			body='Twilight Mail'
+		}	
+	}
+	
+	sets['WS'] = {}
+	
+	sets.WS['Resolution'] = {
+	}
+
+	sets.WS["Cloudsplitter"] = {
+    ammo="Erlene's Notebook",
+    head={ name="Valorous Mask", augments={'AGI+5','"Mag.Atk.Bns."+21','INT+1 MND+1 CHR+1','Mag. Acc.+16 "Mag.Atk.Bns."+16',}},
+    body={ name="Odyss. Chestplate", augments={'"Mag.Atk.Bns."+8','Weapon skill damage +4%','MND+13','Mag. Acc.+6',}},
+    hands={ name="Odyssean Gauntlets", augments={'Mag. Acc.+20 "Mag.Atk.Bns."+20','CHR+8','Mag. Acc.+13','"Mag.Atk.Bns."+14',}},
+    legs={ name="Odyssean Cuisses", augments={'Mag. Acc.+19 "Mag.Atk.Bns."+19','Weapon skill damage +1%','MND+4','Mag. Acc.+5','"Mag.Atk.Bns."+12',}},
+    feet={ name="Odyssean Greaves", augments={'Mag. Acc.+16 "Mag.Atk.Bns."+16','Weapon skill damage +2%','INT+3','Mag. Acc.+10','"Mag.Atk.Bns."+11',}},
+    neck="Deviant Necklace",
+    waist="Salire Belt",
+    left_ear="Friomisi Earring",
+    right_ear={ name="Moonshade Earring", augments={'"Mag.Atk.Bns."+4','TP Bonus +25',}},
+    left_ring="Acumen Ring",
+    right_ring={ name="Demon's Ring", augments={'"Mag.Atk.Bns."+3','Mag. crit. hit dmg. +2%','"Resist Curse"+2',}},
+    back="Argocham. Mantle",
+	}
+	
+	sets.WS["Ruinator"] = {
+	
+	}
+	
+	sets.WS["Calamity"] = {
+    ammo="Aqreqaq Bomblet",
+    head="Yaoyotl Helm",
+    body="Uac Jerkin",
+    hands={ name="Odyssean Gauntlets", augments={'Accuracy+29','"Dbl.Atk."+3','STR+8',}},
+--    legs={ name="Valor. Hose", augments={'Accuracy+30','Rng.Acc.+23','Accuracy+17 Attack+17','Mag. Acc.+4 "Mag.Atk.Bns."+4',}},
+		legs="Boii cuisses +1",
+    feet={ name="Amm Greaves", augments={'HP+40','VIT+7','Accuracy+12',}},
+    neck="Asperity Necklace",
+    waist="Windbuffet Belt +1",
+    left_ear="Brutal Earring",
+    right_ear="Moonshade Earring",
+    left_ring="Pyrosoul Ring",
+    right_ring="Pyrosoul Ring",
+    back="Atheling Mantle",
+	}
+	
+	sets.WS["Savage Blade"] = {
+    ammo="Ginsen",
+    head="Yaoyotl Helm",
+    body={ name="Acro Surcoat", augments={'Accuracy+17 Attack+17','"Dbl.Atk."+3','Sklchn.dmg.+5%',}},
+    hands={ name="Odyssean Gauntlets", augments={'Accuracy+29','"Dbl.Atk."+3','STR+8',}},
+    legs={ name="Valor. Hose", augments={'Accuracy+30','Rng.Acc.+23','Accuracy+17 Attack+17','Mag. Acc.+4 "Mag.Atk.Bns."+4',}},
+    feet={ name="Founder's Greaves", augments={'VIT+9','Accuracy+14','"Mag.Atk.Bns."+13','Mag. Evasion+15',}},
+    neck="Iqabi Necklace",
+    waist="Windbuffet Belt +1",
+    left_ear="Brutal Earring",
+    right_ear="Zennaroi Earring",
+    left_ring="Mars's Ring",
+    right_ring="Patricius Ring",
+    back="Atheling Mantle",
+	}
+		
+	sets['JA'] = {}
+	
+	sets.JA['Beserk'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Warcry'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Defender'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Aggressor'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Provoke'] = {
+		baseset=sets.enmity
+	
+	}
+	
+	sets.JA['Tomahawk'] = {
+		precast={ammo="Throwing tomahawk"}
+	}
+	
+	sets.JA['Retaliation'] = {
+		feet="Boii Calligae +1",
+	}
+	
+	sets.JA['Restraint'] = {
+		hands="Boii mufflers +1",
+	}
+	
+	sets.JA['Blood Rage'] = {
+	
+	}
+	
+	sets.JA["Warrior's Charge"] = {
+		legs="Agoge Cuisses",
+	}
+	
+	sets.JA['Brazen Rush'] = {
+	
+	}
+	
+	sets.JA['Mighty Strikes'] = {
+	
+	}
+	
+	-- Dancer sub
+	
+	sets.dancer = {
+		baseset=sets.enmity
+	}
+	
+	sets.JA['Drain Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Drain Samba II'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Aspir Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets['waltz'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Curing Waltz'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Curing Waltz II'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Curing Waltz III'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Healing Waltz'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Divine Waltz'] = {
+		baseset=sets.waltz
+	}
+
+	sets.JA['Spectral Jig'] = {
+		baseset=sets.dancer
+	}
+
+	sets.JA['Haste Samba'] = {
+		baseset=sets.dancer
+	}
+
+	sets['steps'] = {
+		baseset=sets.dancer,
+		right_ear="Choreia Earring"
+	}
+
+	sets.JA['Quickstep'] = {
+		baseset=sets.steps
+	}
+
+	sets.JA['Box Step'] = {
+		baseset=sets.steps
+	}
+
+	sets.JA['Stutter Step'] = {
+		baseset=sets.steps
+	}
+	
+	sets['flourishes'] = {
+		baseset=sets.dancer
+	}
+	
+	sets.JA['Animated Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	sets.JA['Violent Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	sets.JA['Reverse Flourish'] = {
+		baseset=sets.flourishes
+	}
+	
+	-- Rune Fencer
+	sets.JA['Swipe'] = sets.mab
+	sets.JA['Lunge'] = sets.mab
+	
+	sets.JA['Ignis'] = {baseset=sets.enmity}
+	sets.JA['Gelus'] = {baseset=sets.enmity}
+	sets.JA['Flabra'] = {baseset=sets.enmity}
+	sets.JA['Tellus'] = {baseset=sets.enmity}
+	sets.JA['Sulpor'] = {baseset=sets.enmity}
+	sets.JA['Unda'] = {baseset=sets.enmity}
+	sets.JA['Lux'] = {baseset=sets.enmity}
+	sets.JA['Tenebrae'] = {baseset=sets.enmity}
+	
+	sets.JA['Swordplay'] = {baseset=sets.enmity}
+	sets.JA['Vallation'] = {baseset=sets.enmity}
+	sets.JA['pflug'] = {baseset=sets.enmity}
+	
+	-- Magic
+	
+	sets['fast cast'] = {
+		precast={
+		},
+		basesets={sets.Engaged['PDT']}
+	}
+	
+	sets['enmity fast cast'] = {
+		baseset=sets['fast cast'],
+		precast={
+		}
+	}
+	sets['MA'] = {}
+	
+	sets.MA['Cocoon'] = sets['enmity fast cast']
+
+	sets.MA['Blank Gaze'] = sets['enmity fast cast']
+
+	sets.MA['Battle Dance'] = sets['enmity fast cast']
+
+	sets.MA['Jettatura'] = sets['enmity fast cast']
+
+	sets.MA['Haste'] = sets['fast cast']
+
+	sets.MA['Refresh'] = sets['fast cast']
+
+	sets.MA['Aquaveil'] = sets['fast cast']
+
+
+	sets.MA['BlueMagic'] = {
+		baseset=sets['fast cast']
+	}
+	
+	sets.MA['Flash'] = {
+    basesets={sets.enmity},
+	}
+
+	-- NIN sub
+	sets.MA['Utsusemi: Ichi'] = {
+	
+	}
+	
+	sets.MA['Utsusemi: Ni'] = {
+	
+	}
+
+	-- Equip this gear when certain buffs are active
+	
+	sets['buff active'] = {}
+	
+	sets['buff active']["Restraint"] = {hands = "Boii Mufflers +1"}
+	
+	sets['ITEM'] = {}
+	
+	sets.ITEM['Remedy'] = {}
+	sets.ITEM['Holy Water'] = {
+		left_ring="Ephedra Ring",
+		right_ring="Saida Ring"
+	}
+	
+	sets['react'] = {}
+	
+	if T{'NIN', 'DNC'}:contains(player.sub_job) then
+		send_command("gs c weapon axe and dagger")
+	else 
+		send_command("gs c weapon axe and shield")
+	end
+end

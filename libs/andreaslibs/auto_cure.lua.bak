@@ -1,0 +1,183 @@
+require('tables')
+require('strings')
+require('maths')
+local spells = require('res/spells')
+
+docures = true
+cure_threshold = 50
+my_cure_threshold = 50
+prioritize_self = false
+for_job = for_job or nil
+
+--  How much each spell will cure for
+cure_matrix = {
+	{["spell"]="Cure",    ["cured_amount"] = 70  },
+	{["spell"]="Cure II", ["cured_amount"] = 150  },
+	{["spell"]="Cure III",["cured_amount"] = 300},
+	{["spell"]="Cure IV", ["cured_amount"] = 600},
+}
+
+local logic = {
+	['true'] = true,
+	['false'] = false,
+	['yes'] = true,
+	['no'] = false,
+	['on'] = true,
+	['off'] = false
+}
+
+function do_auto_cures()
+	if windower.ffxi.get_info().logged_in == false then
+		return false
+	end
+	local player = windower.ffxi.get_player()
+	if player.main_job ~= for_job then
+		return false
+	end
+	if docures == false then
+		return false
+	end
+	if healing_delay and healing_delay > 0 then
+		healing_delay = healing_delay - 1
+		return false
+	end
+	
+	local party
+	local member
+	local temp = ""
+	local key = ""
+	local retVal = false
+	local party2 = {}
+	
+	party = windower.ffxi.get_party()
+		
+	-- Recreate party structure to make sure the pld is cured first
+	party2[1]= {['target']='p0', ['member'] = party['p0']}
+	for target, member in pairs(party) do
+		if target ~= 'p0' and type(member) == 'table' then
+			party2[table.length(party2)+1] = {['target']=target, ['member'] = member}
+		end
+	end
+	
+  local spell_recasts = windower.ffxi.get_spell_recasts()
+  local current_hp
+  local cure_to_hp
+  local member_to_cure = nil
+  local member_to_cure_hp = nil
+  
+  -- Get which player is in most need of curing
+  for order, info in ipairs(party2) do
+  	target = info.target
+  	member = info.member
+  	if isValidMember(member) then
+  		current_hp = math.floor(member.hp*member.hpp/100)
+  		cure_to_hp = math.floor(member.hp * cure_threshold/100)
+  		-- Check for player's own cure threshold
+  		if member.name == player.name then
+  			cure_to_hp = math.floor(member.hp * my_cure_threshold/100)
+  		end
+  		if current_hp > 0 and current_hp < cure_to_hp then
+  			if member_to_cure then
+  				if current_hp < member_to_cure_hp then
+	  				member_to_cure    = member.name
+	  				member_to_cure_hp = current_hp
+	  				member_cure_to_hp = cure_to_hp
+  				end
+  			else
+  				member_to_cure    = member.name
+  				member_to_cure_hp = current_hp
+  				member_cure_to_hp = cure_to_hp
+  			end
+  		end
+  	end
+  end
+  
+	-- If member needing cure is found, cure them
+	if member_to_cure then
+		if table.contains(player.buffs, 6) == false 
+	  	 and table.contains(player.buffs, 29) == false 
+	  then
+	  	local cure_spell = 
+	  		get_cure_spell(member_to_cure_hp,
+	  		            	 member_cure_to_hp,
+	  		               member_to_cure)
+	  			if spell_recasts[spell_names[cure_spell]] == 0 then
+	  				--if math.sqrt(windower.ffxi.get_mob_by_name(member_to_cure).distance) <= 20 then
+						  windower.send_command('input /ma "' .. cure_spell .. '" ' .. member_to_cure)
+					  	retVal = true
+					  --end
+					end
+		end
+	end
+	
+	return retVal
+end
+
+windower.register_event('addon command', function(...)
+	local args = {...}
+	local command = ''
+	local autocommand = nil
+	local arg1 = nil
+	
+	if table.length(args) > 0 then
+		command = args[1]
+	
+		if T{"cure", "cures", "docurs", "do_cures"}:contains(command) then
+			if args[2] then
+				if logic[args[2]] then
+					docures = true
+				else
+					docures = false
+				end
+			else
+				if docures then
+					docures = false
+				else
+					docures = true
+				end
+			end
+		end
+
+	end
+end)
+
+function get_cure_spell(hp,curedhp, mem_name)
+	-- hp is current hp
+	-- Cured hp is what you're tryng to reach
+	local cure_spell = "Cure III"
+	mem_name = mem_name or "no name"
+	hp =      math.floor(hp)
+	curedhp = math.floor(curedhp)
+	
+	for _, spell_info in ipairs(cure_matrix) do
+		if (hp+spell_info.cured_amount) >= curedhp then
+			cure_spell = spell_info.spell
+			break
+		end
+	end
+	
+--			windower.add_to_chat(5, "Chose " .. cure_spell .. " for " .. mem_name ..
+--			                        ". hp=" .. tostring(hp) .. ". curedhp=" .. tostring(curedhp)..
+--			                        ". Difference = " .. (curedhp-hp))
+	return cure_spell
+end
+
+local spell_mp_costs = {}
+local spell_names = {}
+
+windower.register_event('load', function()
+	for key, spell_info in ipairs(spells) do
+		if string.startswith(spell_info.en,"Cur") then
+			spell_mp_costs[spell_info.en] = spell_info.mp_cost
+		end
+		spell_names[spell_info.en] = spell_info.recast_id
+	end
+end)
+
+function isValidMember(member)
+	local retVal = false
+	if member ~= nil and member.mob ~= nill and math.sqrt(member.mob.distance) <= 20 and member.hpp > 0 then
+		retVal = true
+	end
+	return retVal
+end

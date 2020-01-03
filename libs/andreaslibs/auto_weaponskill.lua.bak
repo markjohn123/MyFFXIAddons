@@ -1,0 +1,356 @@
+packets = require('packets')
+cweaponskills = require('res/weapon_skills')
+require('andreaslibs/resource_items')
+skillchains = require('andreaslibs/skillchains')
+skillchain_levels = require('andreaslibs/skillchain_levels')
+
+do_auto_weaponskills = false -- Do automatic weaponskills
+mobhp_ws_pct = 100 -- Percent at which to weaponskill for single weaponskills
+default_weaponskill_tp = 1000 -- TP to weaponskill at
+weaponskill_distance = 4 -- Distance within to weaponskill
+keep_aftermath_up = false -- Keep aftermath active
+aftermath_level = 3 -- Aftermath leel to maintain
+aftermath_weaponskill = nil -- The aftermath weaponskill
+weaponskills = nil --List of weaponskill to use
+close_skillchain = false -- Will attempt to close last chained weaponskill.  This will only work when weaponskills is defined as a table
+weaponskill_anyway = true -- If it can't close the skillchain, then use the first ws
+autows_forjob = nil -- The job that this addon pertains to.
+-- pre_weaponskill_abilities() Define this do do stuff before you weaponskill
+--                             Return true if successful, false otherwise.
+
+-- Flatten the weaponskills and create mapping for sc_name to id
+local flattened_weaponskills = {}
+local sc_name_to_id = {}
+for ws_id, ws_info in pairs(cweaponskills) do
+	flattened_weaponskills[string.lower(ws_info.en)] = ws_info.en
+	sc_name_to_id[ws_info.en] = ws_id
+end
+
+function get_closing_weaponskill()
+	local retVal = -1
+	local breakout = false
+	if weaponskill_anyway then
+		retVal = 1
+	end
+	
+	for sc_level=4,1,-1 do
+		if last_skillchain == skillchain_levels[sc_level][1] then
+			for order, ws in ipairs(weaponskills) do
+				local ws_id = sc_name_to_id[flattened_weaponskills[string.lower(ws)]]
+				if cweaponskills[ws_id].skillchain_a == skillchain_levels[sc_level][2] or
+					 cweaponskills[ws_id].skillchain_b == skillchain_levels[sc_level][2] or
+					 cweaponskills[ws_id].skillchain_c == skillchain_levels[sc_level][2]
+				then
+					retVal = order
+					breakout = true
+					break
+				end
+			end
+		end
+		if breakout then break end
+	end
+	
+	return retVal
+end
+
+function auto_weaponskill()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	local target = windower.ffxi.get_mob_by_target('t')
+	local ability_recasts = windower.ffxi.get_ability_recasts()
+	local weaponskill_command = nill
+	
+	if player == nil or player.main_job ~= autows_forjob then
+			return false
+	end
+	
+	-- We're only concerned for sam with auto weaponskills
+	if do_auto_weaponskills 
+	   and player.status == 1 
+	   and canDoAbilities()
+	then
+		if keep_aftermath_up
+			 and aftermath_level
+		   and aftermath_up() < aftermath_level
+		then
+			if player.vitals.tp >= (aftermath_level * 1000) then
+				weaponskill_command = 'input /ws "' .. aftermath_weaponskill .. '" <t>'
+				retVal = true
+			end
+		else
+			if default_weaponskill_tp and player.vitals.tp >= default_weaponskill_tp then
+				if pre_weaponskill_abilities and pre_weaponskill_abilities() then
+					--retVal = true
+				elseif type(weaponskills) == 'table' then
+					if table.length(weaponskills) > 0 then
+						if curr_ws > table.length(weaponskills) then
+							curr_ws = 1
+						end
+						
+						local elapsed_time  = os.clock() - my_last_ws_time
+						
+						-- if I wasn't the last person to weaponskill or
+						-- if the weaponskill occurred too soon or too late.
+						if elapsed_time <=5 then return false end
+						if player.id ~= last_ws_player_id or
+						   elapsed_time >= 9 							 
+						then
+							curr_ws = 1
+						end
+						
+						-- Modify curr_ws if we can close skillchain
+						if close_skillchain then
+							curr_ws = get_closing_weaponskill()
+							if curr_ws == -1 then
+								curr_ws = 1
+								return false
+							end
+						end
+						
+						weaponskill_command = 'input /ws "' .. weaponskills[curr_ws] .. '" <t>'
+						--windower.send_command('input /ws "' .. weaponskills[curr_ws] .. '" <t>')
+						-- This is taken cared of in the incoming chunk event
+						--curr_ws = curr_ws + 1
+						--if curr_ws > table.length(weaponskills) then
+						--	curr_ws = 1
+						--end
+						--retVal = true
+					end
+				else
+					if mobhp_ws_pct then
+						if target and target.hpp > mobhp_ws_pct then
+							return false
+						end
+					end
+					weaponskill_command = 'input /ws "' .. weaponskills .. '" <t>'
+					--windower.send_command('input /ws "' .. weaponskills .. '" <t>')
+					curr_ws = 1
+					--retVal = true
+				end
+			end
+		end
+		
+		if target and math.sqrt(target.distance) <= weaponskill_distance and weaponskill_command then
+			windower.send_command(weaponskill_command)
+			if isbusy and isbusy['busy_delay'] then
+				isbusy['busy_delay'] =2
+			end
+			retVal = true
+		end 
+	end
+	
+	return retVal
+end
+
+windower.register_event("status change", function(new_status_id,old_status_id)
+	if new_status_id == 1 then
+		curr_ws = 1
+		last_ws_player_id = -1
+		last_ws_id = -1
+		last_ws_time = -1
+		last_ws_targetid = -1
+		last_skillchain = "none"
+	end
+end)
+
+old_target = -1
+windower.register_event("target change", function(index)
+	if old_target ~= index then
+		curr_ws = 1
+		last_ws_player_id = -1
+		last_ws_id = -1
+		last_ws_time = -1
+		last_ws_targetid = -1
+		last_skillchain = "none"
+		old_target = index
+	end
+end)
+
+curr_ws = 1
+last_ws_player_id = -1
+last_ws_id = -1
+last_ws_time = -1
+my_last_ws_time = -1
+last_ws_targetid = -1
+last_skillchain = "none"
+windower.register_event('incoming chunk', function(id, data, data_modified, injected, blocked)
+  if id == 0x028 then
+  	local player = windower.ffxi.get_player()
+    local packet = packets.parse('incoming', data)
+		if packet.Actor == player.id then
+			if packet.Category == 3 then
+				-- Weaponskill executed properly.
+				curr_ws = curr_ws + 1
+				if not weaponskills[curr_ws] then
+					curr_ws = 1
+				end
+				my_last_ws_time = os.clock()
+				local ctype = "string"
+				for key,value in pairs(packet) do
+					ctype = type(value)
+					if ctype ~= "string" then
+						value = tostring(value)
+					end
+					--windower.add_to_chat(5, "(" .. ctype .. ")" .. key .. "=>" .. value)
+					--if logger then
+						--flog("lua.log","(" .. ctype .. ")" .. key .. "=>" .. value)
+					--end
+				end
+				--if logger then
+					--flog("lua.log","----------------------------------------------------")
+				--end
+				-- cweaponskills[packet.Param]
+				--windower.add_to_chat(5, "Weaponskill " .. cweaponskills[packet.Param].en  .. " damage " ..
+				--                        tostring(packet["Target 1 Action 1 Param"]))
+			end
+		end
+		-- This part is for recording weaponskill information of the last person who did a ws in
+		-- party, for skillchaining.
+		-- TODO: This should only return skillchains for people who do weaponskills in your party,
+		--       and on the same monster.
+		local party = windower.ffxi.get_party()
+		local target = windower.ffxi.get_mob_by_target('t')
+		if target and target.is_npc and target.valid_target and target.id == packet["Target 1 ID"] 
+		   and packet.Category == 3 
+		then
+			local pprefixes = {"p0", "p1", "p2", "p3", "p4", "p5", "a10", "a11", "a12", "a13", "a14", "a15", "a20", "a21", "a22", "a23", "a24", "a25"}
+			for count, prefix in ipairs(pprefixes) do
+				if party[prefix] and party[prefix].mob and party[prefix].mob.id == packet.Actor then
+					local old_ws_time = last_ws_time
+					last_ws_player_id = packet.Actor
+			    last_ws_id        = packet.Param
+			    last_ws_time      = os.clock()
+					last_ws_targetid  = packet["Target 1 ID"]
+					if packet and packet.param and cweaponskills[packet.Param] 
+					   and  cweaponskills[packet.Param].skillchain_a 
+					then
+						last_skillchain		= cweaponskills[packet.Param].skillchain_a
+					else
+						last_skillchain = "none"
+					end
+					local sc = "" 
+					if packet["Target 1 Action 1 Added Effect Animation"] then
+						last_skillchain = skillchains[packet["Target 1 Action 1 Added Effect Animation"]]
+						sc = ":sc"
+					end
+					
+					if logger then
+						--flog("lua.log",tostring(last_ws_time - old_ws_time) .. " : " .. last_skillchain .. sc)
+					end
+					break
+				end
+			end
+		end
+  end
+end)
+
+function aftermath_up()
+	local retVal = 0
+	local aftermaths = {
+		270,
+		271,
+		272,
+		273,}
+	local player = windower.ffxi.get_player()
+	
+	for key, aftermath in ipairs(aftermaths) do
+		if table.contains(player.buffs, aftermath) then
+			retVal = aftermath - 269
+			break
+		end
+	end	
+	--windower.add_to_chat(5, "Aftermath level=" .. tostring(retVal))
+	return retVal
+end
+
+windower.register_event('addon command', function(...)
+	local command = ''
+	local args = {...}
+	local player = windower.ffxi.get_player()
+	
+	if table.length(args) > 0 then
+		command = args[1]
+	end
+	
+	if T{'doautows', 'aws', 'aw', 'autows'}:contains(string.lower(command)) == true then
+		if logic[args[2]] == true then
+			do_auto_weaponskills = true
+		else
+			do_auto_weaponskills = false
+		end
+		
+		windower.add_to_chat(5, 'Auto Weaponskill: ' .. tostring(do_auto_weaponskills))
+	elseif T{'dws', 'defautweaponskill', 'default_weaponskill'}:contains(string.lower(command)) == true then
+		local temp = ""
+		local space = ""
+		local count = 2
+		while args[count] do
+			temp = temp .. space .. args[count]
+			space = " "
+			count = count + 1
+		end
+		
+		if temp ~= "" then
+			weaponskills = temp
+			windower.add_to_chat(5, 'Default Weaponskill: ' .. weaponskills)
+		end
+	elseif T{"wsd", "weaponskilldistance", "weaponskill_distance"}:contains(command) then
+		if args[2] then
+			weaponskill_distance = tonumber(args[2])
+		else
+			weaponskill_distance = 4
+		end
+		windower.add_to_chat(5, "Weaponskill Distance: " .. tostring(weaponskill_distance))
+	elseif command == "hp" then
+		if args[2] then
+			mobhp_ws_pct = tonumber(args[2])
+		else
+			mobhp_ws_pct = 100
+		end
+		if mobhp_ws_pct == 0 or mobhp_ws_pct > 100 then
+			mobhp_ws_pct = 100
+		end
+		windower.add_to_chat(5, "mobhp_ws_pct=" .. tostring(mobhp_ws_pct))
+	elseif command == "tp" then
+		if args[2] then
+			default_weaponskill_tp = tonumber(args[2])
+		end
+		if(not default_weaponskill_tp) or default_weaponskill_tp < 1000 or default_weaponskill_tp > 3000 then
+			default_weaponskill_tp = 1000
+		end
+		windower.add_to_chat(5, "TP'ing at " .. tostring(default_weaponskill_tp))
+ 	elseif T{"amws", "aftermath_weaponskill", "aftermathweaponskill","am_ws"}:contains(command) then
+ 		if args[2] then
+ 			aftermath_weaponskill = args[2]
+ 			auto_set_amlvl(aftermath_weaponskill)
+ 		end
+ 		windower.add_to_chat(5, "Aftermath weaponskill: " .. aftermath_weaponskill)
+ 	elseif T{"keepaftermathup", "aftermathup","aftermath","doaftermath","keep_aftermath_up", "aftermath_up","do_aftermath"}:contains(command) then
+ 		if args[2] then
+ 			keep_aftermath_up = logic[args[2]]
+ 		end
+ 		windower.add_to_chat(5,"Keep aftermath up: " ..tostring(keep_aftermath_up))
+	elseif T{"aftermathlevel", "aftermath_level"}:contains(command) then
+		
+	elseif T{"closeskillchain", "close_skillchain"}:contains(command) then
+		
+	end
+end)
+
+function auto_set_amlvl(amws)
+	local rmews = {
+		["Onslaught"] = 1,
+		["onslaught"] = 1,
+		["Primal Rend"] = 3,
+		["primal rend"] = 3,
+		["Primal rend"] = 3,
+		["primal Rend"] = 3,
+	}
+	
+	if rmews[amws] then
+		aftermath_level = rmews[amws]
+		windower.add_to_chat(5, "Automatically set aftermath level to " .. tostring(aftermath_level))
+	end
+end
+
+	

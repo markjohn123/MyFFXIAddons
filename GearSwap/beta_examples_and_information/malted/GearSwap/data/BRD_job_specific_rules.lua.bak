@@ -1,0 +1,26 @@
+function precast_job_specific(spell,set)
+	local retSet = set
+	local recasts = windower.ffxi.get_spell_recasts()
+	local player = windower.ffxi.get_player()
+	
+		-- If nightingale is on don't equip precast set
+		if table.contains(player.buffs, 347) then
+			retSet = nil
+		end
+		
+	return retSet
+end
+
+function midcast_job_specific(spell,set)
+	local retSet = set
+	
+	return retSet
+
+end
+
+function aftercast_job_specific(spell,set)
+	local retSet = set
+	
+	return retSet
+
+end

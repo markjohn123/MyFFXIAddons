@@ -1,0 +1,88 @@
+-- Error checks
+function cast_error_checks(spell)
+	local hasError = false
+	local error_string = "Activity error: " .. " activity "
+	local space = ""
+	
+	if spell.prefix == "/range" then return hasError end
+	
+	if spell == nil then
+		error_string = error_string .. "spell is nil."
+		hasError = true
+		space = " "
+	end
+	
+	if spell ~= nil and spell['prefix'] == nil then
+		error_string = error_string .. space .. "spell.prefix is nil."
+		hasError = true
+		space=""
+	end
+	
+	if spell~= nil and spell['en'] == nil then
+		error_string = error_string .. space .. "spell.en is nil."
+		hasError = true
+		space=""
+	end		
+	
+	if spell~= nil and spell.prefix ~= nil and command_prefix_key[spell.prefix] == nil then
+		error_string = error_string .. space .. "command_prefix_key['" .. spell.prefix .. "'] is nil."
+		hasError = true
+		space=""
+	end		
+	
+	if hasError == true then
+		add_to_chat(5, error_string)
+	end
+
+	return hasError
+end
+
+function battle_state_error_checks()
+	local hasError = false
+	local error_string = "Activity error: " .. " activity "
+	
+	
+	if player == nil then
+		hasError = true
+		error_string = error_string .. " player is nil."
+	end
+	
+	if player~=nil and player.status == nil then
+		hasError = true
+		error_string = error_string .. " player.status is nil."
+	end
+	
+	if player~=nil and player.status ~= nil and sets[player.status] == nil then
+		hasError = true
+		error_string = error_string .. " sets['" ..player.status .. "'] is nil."
+	end
+	
+	if battle_state == nil then
+		hasError = true
+		error_string = error_string .. " battle_state is nil."
+	end
+	
+	if player~=nil and player.status ~= nil and sets[player.status] ~= nil and battle_state ~= nil and 
+		sets[player.status][battle_state] == nil
+		then
+		hasError = true
+		error_string = error_string .. " sets['" .. player.status .. "']['" .. battle_state .. "] is nil."
+	end
+	
+	if weapon == nil then
+		hasError = true
+		error_string = error_string .. " weapon is nil."
+	end
+	
+	if sets.weapons[weapon] == nil then
+		hasError = true
+		error_string = error_string .. " sets.weapons[weapon] is nil."
+	end
+	
+	if hasError then
+		add_to_chat(5, error_string)
+	end
+	
+	return hasError
+end
+

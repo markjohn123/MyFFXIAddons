@@ -1,0 +1,7 @@
+function precast_JA_specific(spell,precast_set)
+
+end
+
+function midcast_JA_specific(spell,precast_set)
+
+end

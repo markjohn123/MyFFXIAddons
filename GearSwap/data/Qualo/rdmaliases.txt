@@ -1,0 +1,100 @@
+      --------------------------------------
+    -- Begin RDM Gear Aliases
+    --------------------------------------
+        -- Idle - focus on refresh and PDT
+        gsRDM = {}
+        gsRDM.main = {name="Bolelabunga"}
+        gsRDM.sub = {name="Genbu's Shield"}
+        gsRDM.head = {name="Nahtirah Hat"}
+        gsRDM.neck = {name="Imbodia Necklace"}
+        gsRDM.hands = {name="Telchine Gloves"}
+        gsRDM.body = {name="Ebers Bliaud"}
+        gsRDM.legs = {name="Osmium Cuisses"}
+        gsRDM.feet = {name="Regal Pumps +1"}
+        gsRDM.ring1 = {name="Ephedra Ring"}
+        gsRDM.ring2 ={name="Sirona's Ring"}
+        gsRDM.ear1= {name="Lifestorm Earring"}
+        gsRDM.ear2= {name="Moonshade Earring"}
+        gsRDM.back = {name="Xucau Mantle"}
+        gsRDM.waist = {name="Fucho-no-obi"}
+
+        gsRDM.FC = {}
+        gsRDM.FC.main = {name="Colada"}
+        gsRDM.FC.sub = {name="Genbu's Shield"}
+        gsRDM.FC.head = {name="Nahtirah Hat"}
+        gsRDM.FC.body = {name="Vitivation Tabard"}
+        gsRDM.FC.hands = {}
+        gsRDM.FC.legs = {name="Kayhaus Tights"}
+        gsRDM.FC.feet = {}
+        gsRDM.FC.ear1 = {name="Loquacious Earring"}
+
+        gsRDM.CP = {}
+        gsRDM.CP.main = {name="Tamaxchi"}
+        gsRDM.CP.sub = {name="Genbu's Shield"}
+        gsRDM.CP.head = {}
+        gsRDM.CP.neck = {name="Imbodia Necklace"}
+        gsRDM.CP.hands = {name="Telchine Gloves"}
+        gsRDM.CP.body = {name="Vanya Robe"}
+        gsRDM.CP.legs = {name="Kaykaus Tights"}
+        gsRDM.CP.feet = {name="Vanya Clogs"}
+        gsRDM.CP.ring1 = {name="Ephedra Ring"}
+        gsRDM.CP.ring2 ={name="Sirona's Ring"}
+        gsRDM.CP.ear1= {name="Lifestorm Earring"}
+        gsRDM.CP.ear2= {name="Loquacious Earring"}
+        gsRDM.CP.back = {name="Ghostfyre Cape"}
+
+
+        gsRDM.HMP = {}
+        -- refresh gear or hmp
+        gsRDM.HMP.main = {name="Bolelabunga"}
+        gsRDM.HMP.sub = {name="Genbu's Shield"}
+        gsRDM.HMP.waist = {name="Fucho-no-obi"}
+        gsRDM.HMP.neck = {name="Beak Necklace"}
+
+        -- best int or MAB - nuke set
+        gsRDM.Int = {}
+        gsRDM.Int.main = {name="Marin Staff"}
+        gsRDM.Int.sub = {}
+        gsRDM.Int.head = {name="Nahtirah Hat"}
+        gsRDM.Int.neck = {name="Melic Torque"}
+        gsRDM.Int.hands = {name="Chironic Gloves"}
+        gsRDM.Int.body = {name="Vanya Robe"}
+        gsRDM.Int.legs = {name="Chironic Hose"}
+        gsRDM.Int.feet = {name="Tutyr Sabots"}
+        gsRDM.Int.ring1 = {name="Resonance Ring"}
+        gsRDM.Int.ring2 = {name="Zodiac Ring"}
+        gsRDM.Int.ear1= {name="Lifestorm Earring"}
+        gsRDM.Int.ear2= {name="Loquacious Earring"}
+        gsRDM.Int.back = {name="Ghostfyre Cape"}
+        gsRDM.Int.waist = {name="Duelist's Belt"}
+
+        gsRDM.Mnd = {}
+        gsRDM.Mnd.main = {name="Colada"}
+        gsRDM.Mnd.sub = {name="Genbu's Shield"}
+        gsRDM.Mnd.hands = {name="Chironic Gloves"}
+        gsRDM.Mnd.legs = {name="Chironic Hose"}
+        gsRDM.Mnd.ring1 = {name="Sophia Ring"}
+
+        gsRDM.Enh = {}
+        gsRDM.Enh.body = gsRDM.body
+        gsRDM.Enh.hands = {name="Chironic Gloves"}
+        gsRDM.Enh.feet = {name="Regal Pumps +1"}
+        gsRDM.Enh.back = {name="Ghostfyre Cape"}
+
+        gsRDM.Enf = {}
+        gsRDM.Enf.ring1 = {name="Irrwisch Ring"}
+        gsRDM.Enf.body = {name="Vanya Robe"}
+        gsRDM.Enf.hands = {name="Lurid Mitts"}
+        gsRDM.Enf.legs = {name="Chironic Hose"}
+        gsRDM.Enf.feet = {name="Medium's Sabots"}
+        gsRDM.Enf.back = {name="Ghostfyre Cape"}
+
+        gsRDM.Regen = {}
+        gsRDM.Regen.main = {name="Bolelabunga"}
+        gsRDM.Regen.body = {name="Piety Briault"}
+        gsRDM.Regen.hands = {name="Orison Mitts +2"}
+
+
+    --------------------------------------
+    -- End RDM Gear Aliases
+    --------------------------------------

@@ -1,0 +1,25 @@
+sets["obi's"] = {
+	["fire"] = "",
+	["earth"] = "",
+	["water"] = "",
+	["wind"] = "",
+	["ice"] = "",
+	["thunder"] = "RaiRin Obi",
+	["light"] = "",
+	["dark"] = "",
+}
+	
+
+function WS_specific(spell,set)
+	local retSet = set
+	
+	if spell.prefix == '/weaponskill' then
+		if spell.name == 'Cloudsplitter' and
+			 T{world.day_element,world.weather_element}:contains('thunder') then
+			retSet = set_combine(retSet, sets["obi's"].thunder)	
+		end
+
+	end
+	
+	return retSet
+end

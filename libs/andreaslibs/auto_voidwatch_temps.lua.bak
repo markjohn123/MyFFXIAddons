@@ -1,0 +1,43 @@
+for_job = nil
+do_vw_temps = false
+temps={}
+--- An items array must exist giving the following:
+-- key is the priority
+-- value is an array with at least 1 key of en.  The value is the english name.
+-- The items.lua has the exact format needed for items
+
+-- Format of temps
+-- [key] - priority of entry
+-- value - an array containing below
+
+-- [key] - tempid
+-- value = criteria; function or boolean
+
+-- Put this into your infinity_loop
+function voidwatch_temps()
+	local retVal = false
+	local player = windower.ffxi.get_player()
+	if not player then return retVal end
+	--if player.status ~= 1 then return retVal end
+	
+	if for_job and player.main_job ~= for_job then return retVal end
+	if temps == nil or table.length(temps) == 0 then return retVal end
+	
+	if not do_vw_temps then return retVal end
+	for priority, temps_info in ipairs(temps) do
+		if temps_info and type(temps_info) == 'table' then
+			for tempid, criteria in pairs(temps_info) do
+				if ((type(criteria) == 'boolean' and criteria == true)
+				     or (type(criteria) == 'function' and criteria() == true))
+				    and has_item(tempid)
+				    and items and type(items) == 'table'
+				    and items[tempid]
+				then
+					windower.send_command('input /item "' .. items[tempid].en .. '" <me>')
+				end
+			end
+		end
+	end
+	
+	return retVal
+end
